@@ -1,5 +1,76 @@
+import re
 from util import *
 
+def recognize_generic_features_type(df):
+    integer_features = []
+    double_features = []
+    string_features = []
+    for c in list(df.columns):
+        # Check if it has string
+        if (df[c].map(lambda x: len(re.findall(r'[^\d\.\-|e]', str(x)))).sum() > 0):
+            string_features.append(c)
+        else:
+            # Check if it has just integers
+            if (df[c].map(lambda x: int(x) == float(x)).sum() == df.shape[0]):
+                integer_features.append(c)
+            else:
+                double_features.append(c)
+
+    type_features = {
+        'integer': integer_features,
+        'double': double_features,
+        'string': string_features,
+    }
+    features_type = dict()
+    for col in integer_features:
+        features_type[col] = 'integer'
+    for col in double_features:
+        features_type[col] = 'double'
+    for col in string_features:
+        features_type[col] = 'string'
+
+    return type_features, features_type
+
+def prepare_generic_dataset(df, categorical_columns, class_name):
+
+    df = pd.concat([df[class_name], df.drop(columns=[class_name])], axis=1)
+
+    # Features Categorization
+    columns = df.columns
+
+    possible_outcomes = list(df[class_name].unique())
+
+    type_features, features_type = recognize_generic_features_type(df)
+
+    discrete = categorical_columns
+    discrete, continuous = set_discrete_continuous(columns, type_features, class_name, discrete, continuous=None)
+
+    columns_tmp = list(columns)
+    columns_tmp.remove(class_name)
+    idx_features = {i: col for i, col in enumerate(columns_tmp)}
+
+    # Dataset Preparation for Scikit Alorithms
+    df_le, label_encoder = label_encode(df, discrete)
+    X = df_le.loc[:, df_le.columns != class_name].values
+    y = df_le[class_name].values
+
+    dataset = {
+        'name': 'tempDS',
+        'df': df,
+        'columns': list(columns),
+        'class_name': class_name,
+        'possible_outcomes': possible_outcomes,
+        'type_features': type_features,
+        'features_type': features_type,
+        'discrete': discrete,
+        'continuous': continuous,
+        'idx_features': idx_features,
+        'label_encoder': label_encoder,
+        'X': X,
+        'y': y,
+    }
+
+    return dataset
 
 def prepare_german_dataset(filename, path_data):
 

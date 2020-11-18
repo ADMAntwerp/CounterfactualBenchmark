@@ -55,7 +55,7 @@ def genetic_neighborhood(dfZ, x, blackbox, dataset):
         neig_indexes = get_closest_diffoutcome(dfZ, dfx, discrete, continuous, class_name,
                                                blackbox, label_encoder, distance_function, k=100)
         Zn, _ = label_encode(dfZ, discrete, label_encoder)
-        Zn = Zn.iloc[neig_indexes, Z.columns != class_name].values
+        Zn = Zn.iloc[neig_indexes, Zn.columns != class_name].values
         Z = np.concatenate((Z, Zn), axis=0)
 
     dfZ = build_df2explain(blackbox, Z, dataset)

@@ -18,6 +18,10 @@ def fit(df, class_name, columns, features_type, discrete, continuous,
     data_filename = path + filename + '.data'
     names_filename = path + filename + '.names'
     tree_filename = path + filename + '.dot'
+
+    for k, v in features_type.items():
+        if v == 'integer':
+            df[k] = df[k].map(int)
     
     df.to_csv(data_filename, sep=sep, header=False, index=False)
     
@@ -28,10 +32,12 @@ def fit(df, class_name, columns, features_type, discrete, continuous,
         disc_cont = 'class' if col == class_name else disc_cont 
         names_file.write('%s%s%s%s%s\n' % (col, sep, col_type, sep, disc_cont))
     names_file.close()
-    
-    cmd = 'yadt/dTcmd -fd %s -fm %s -sep %s -d %s' % (
+
+    # cmd = 'yadt/dTcmd -fd %s -fm %s -sep %s -d %s' % (
+    #     data_filename, names_filename, sep, tree_filename)
+    cmd = '..\\frameworks\\LORE\\yadt\\dTcmd -fd %s -fm %s -sep %s -d %s' % (
         data_filename, names_filename, sep, tree_filename)
-    output = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT)
+    output = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT, shell=True)
     # cmd = r"dTcmd -fd %s -fm %s -sep '%s' -d %s" % (
     #     data_filename, names_filename, sep, tree_filename)
     # cmd = r'noah "%s"' % cmd

@@ -203,12 +203,13 @@ def build_df2explain(bb, X, dataset):
     return dfZ
 
 
-def dataframe2explain(X2E, dataset, idx_record2explain, blackbox):
+def dataframe2explain(X2E, dataset, record2explain, blackbox):
     # Dataset to explit to perform explanation (typically is the train or test set (real instances))
     Z = cPickle.loads(cPickle.dumps(X2E))
 
     # Select record to predict and explain
-    x = Z[idx_record2explain]
+    # x = Z[idx_record2explain]
+    x = record2explain
 
     # Remove record to explain (optional) from dataset Z and convert into dataframe
     # Z = np.delete(Z, idx_record2explain, axis=0)

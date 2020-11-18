@@ -5,7 +5,7 @@ from neighbor_generator import *
 from gpdatagenerator import calculate_feature_values
 
 
-def explain(idx_record2explain, X2E, dataset, blackbox,
+def explain(record2explain, X2E, dataset, blackbox,
             ng_function=genetic_neighborhood, #generate_random_data, #genetic_neighborhood, random_neighborhood
             discrete_use_probabilities=False,
             continuous_function_estimation=False,
@@ -24,7 +24,7 @@ def explain(idx_record2explain, X2E, dataset, blackbox,
     dataset['feature_values'] = calculate_feature_values(X2E, columns, class_name, discrete, continuous, 1000,
                                                          discrete_use_probabilities, continuous_function_estimation)
 
-    dfZ, x = dataframe2explain(X2E, dataset, idx_record2explain, blackbox)
+    dfZ, x = dataframe2explain(X2E, dataset, record2explain, blackbox)
 
     # Generate Neighborhood
     dfZ, Z = ng_function(dfZ, x, blackbox, dataset)
@@ -96,7 +96,7 @@ def is_satisfied(x, rule, discrete, features_type):
                 if x[col] > thr1 or x[col] <= thr2:
                     return False
             elif '<' in val and '<=' in val and val.find('<') < val.find('<='):
-                val = val.split(col)
+                val = val.split(f' {col} ')
                 thr1 = pyyadt.yadt_value2type(val[0].replace('<', ''), col, features_type)
                 thr2 = pyyadt.yadt_value2type(val[1].replace('<=', ''), col, features_type)
                 # if thr2 < x[col] <= thr1: ok
