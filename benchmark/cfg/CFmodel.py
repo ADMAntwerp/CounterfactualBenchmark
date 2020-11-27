@@ -10,7 +10,10 @@ from tensorflow.keras.models import load_model
 # Set seeds
 np.random.seed(42)
 python_random.seed(42)
-tf.random.set_random_seed(42)
+try:
+    tf.random.set_random_seed(42)
+except AttributeError:
+    tf.random.set_seed(42)
 
 # MUST CHECK!!!!!! For reproducibility
 class CreateModel:
