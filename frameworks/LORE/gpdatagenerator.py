@@ -177,15 +177,21 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
     Xgp = list()
     
     if size_sso > 0.0:
-        toolbox_sso = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_sso,
-                                    discrete=discrete, continuous=continuous, class_name=class_name,
-                                    idx_features=idx_features, distance_function=distance_function,
-                                    population_size=size_sso, alpha1=alpha1, alpha2=alpha2, eta=eta1, mutpb=mutpb,
-                                    tournsize=tournsize)
-        population, halloffame, logbook = fit(toolbox_sso, population_size=size_sso, halloffame_ratio=halloffame_ratio, 
-                                              cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+        max_tries = 10
+        Xsso = []
+        tries = 0
 
-        Xsso = get_oversample(population, halloffame)
+        while not Xsso and tries < max_tries:
+            toolbox_sso = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_sso,
+                                        discrete=discrete, continuous=continuous, class_name=class_name,
+                                        idx_features=idx_features, distance_function=distance_function,
+                                        population_size=size_sso, alpha1=alpha1, alpha2=alpha2, eta=eta1, mutpb=mutpb,
+                                        tournsize=tournsize)
+            population, halloffame, logbook = fit(toolbox_sso, population_size=size_sso, halloffame_ratio=halloffame_ratio,
+                                                  cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+
+            Xsso = get_oversample(population, halloffame)
+            tries += 1
         Xgp.append(Xsso)
     
     if size_sdo > 0.0:
