@@ -1,4 +1,5 @@
 """Module containing all required information about the raw or transformed public data."""
+import random as python_random
 
 import pandas as pd
 import numpy as np
@@ -7,6 +8,11 @@ import logging
 
 import tensorflow as tf
 from tensorflow import keras
+
+# Set seeds
+np.random.seed(42)
+python_random.seed(42)
+tf.random.set_random_seed(42)
 
 
 class PublicData:
@@ -141,8 +147,24 @@ class PublicData:
 
     def one_hot_encode_data(self, data):
         """One-hot-encodes the data."""
-        return pd.get_dummies(data, drop_first=False, columns=self.categorical_feature_names)
+        oh_cats = []
+        self.binary_cat_feats = []
+        for c in self.categorical_feature_names:
+            if len(list(data[c].unique())) > 2:
+                oh_cats.append(c)
+            else:
+                self.binary_cat_feats.append(c)
 
+        d_oh_list = []
+        for col in self.categorical_feature_names:
+            if col in self.binary_cat_feats:
+                d_oh_list.append(pd.DataFrame(data[col]))
+            else:
+                d_oh_list.append(pd.get_dummies(data[col], prefix=col))
+        df_oh = pd.concat(d_oh_list, axis=1)
+        df = pd.concat([df_oh, data[self.continuous_feature_names + ['output']]], axis=1)
+
+        return df
     def normalize_data(self, df):
         """Normalizes continuous features to make them fall in the range [0,1]."""
         result = df.copy()
@@ -163,12 +185,14 @@ class PublicData:
                 df[feature_name]*(max_value - min_value)) + min_value
         return result
 
-    def get_minx_maxx(self, normalized=True):
+    def get_minx_maxx(self, normalized=False):
         """Gets the min/max value of features in normalized or de-normalized form."""
         minx = np.array([[0.0]*len(self.encoded_feature_names)])
         maxx = np.array([[1.0]*len(self.encoded_feature_names)])
 
-        for idx, feature_name in enumerate(self.continuous_feature_names):
+
+        for feature_name in self.continuous_feature_names:
+            idx = self.encoded_feature_names.index(feature_name)
             max_value = self.train_df[feature_name].max()
             min_value = self.train_df[feature_name].min()
 
@@ -231,7 +255,7 @@ class PublicData:
     def get_data_params(self):
         """Gets all data related params for DiCE."""
 
-        minx, maxx = self.get_minx_maxx(normalized=True)
+        minx, maxx = self.get_minx_maxx(normalized=False)
 
         # get the column indexes of categorical features after one-hot-encoding
         self.encoded_categorical_feature_indexes = self.get_encoded_categorical_feature_indexes()
@@ -269,25 +293,28 @@ class PublicData:
         for feat in self.categorical_feature_names:
             # first, derive column names in the one-hot-encoded data from the original data
             cat_col_values = []
-            for val in list(self.data_df[feat].unique()):
-                cat_col_values.append(feat + prefix_sep + str(val)) # join original feature name and its unique values , ex: education_school
-            match_cols = [c for c in data.columns if c in cat_col_values] # check for the above matching columns in the encoded data
+            if len(list(self.data_df[feat].unique())) > 2:
+                for val in list(self.data_df[feat].unique()):
+                    cat_col_values.append(feat + prefix_sep + str(val)) # join original feature name and its unique values , ex: education_school
+                match_cols = [c for c in data.columns if c in cat_col_values] # check for the above matching columns in the encoded data
 
-            # then, recreate original data by removing the suffixes - based on the GitHub issue comment: https://github.com/pandas-dev/pandas/issues/8745#issuecomment-417861271
-            cols, labs = [[c.replace(
-                x, "") for c in match_cols] for x in ["", feat + prefix_sep]]
-            out[feat] = pd.Categorical(
-                np.array(labs)[np.argmax(data[cols].values, axis=1)])
-            out.drop(cols, axis=1, inplace=True)
+                # then, recreate original data by removing the suffixes - based on the GitHub issue comment: https://github.com/pandas-dev/pandas/issues/8745#issuecomment-417861271
+                cols, labs = [[c.replace(x, "") for c in match_cols] for x in ["", feat + prefix_sep]]
+                out[feat] = pd.Categorical(np.array(labs)[np.argmax(data[cols].values, axis=1)])
+                out.drop(cols, axis=1, inplace=True)
+            else:
+                # if itś binary, no modification is needed
+                pass
         return out
 
     def get_decimal_precisions(self):
         """"Gets the precision of continuous features in the data."""
         # if the precision of a continuous feature is not given, we use the maximum precision of the modes to capture the precision of majority of values in the column.
-        precisions = [0]*len(self.feature_names)
+        precisions = [0]*len(self.encoded_feature_names)
         for ix, col in enumerate(self.continuous_feature_names):
+            idx = self.encoded_feature_names.index(col)
             if((self.continuous_features_precision is not None) and (col in self.continuous_features_precision)):
-                precisions[ix] = self.continuous_features_precision[col]
+                precisions[idx] = self.continuous_features_precision[col]
             elif((self.data_df[col].dtype == np.float32) or (self.data_df[col].dtype == np.float64)):
                 modes = self.data_df[col].mode()
                 maxp = len(str(modes[0]).split('.')[1]) # maxp stores the maximum precision of the modes
@@ -295,7 +322,7 @@ class PublicData:
                     prec = len(str(modes[mx]).split('.')[1])
                     if prec > maxp:
                         maxp = prec
-                precisions[ix] = maxp
+                precisions[idx] = maxp
         return precisions
 
     def get_decoded_data(self, data):
@@ -344,15 +371,48 @@ class PublicData:
         test = test.reset_index(drop=True)
 
         if encode is False:
-            return self.normalize_data(test)
+            # return self.normalize_data(test)
+            pass
         else:
-            temp = self.prepare_df_for_encoding()
+            # Only works for a very specific data structure
+            output_list = []
+            for idx_n, row in query_instance.items():
 
-            temp = temp.append(test, ignore_index=True, sort=False)
-            temp = self.one_hot_encode_data(temp)
-            temp = self.normalize_data(temp)
+                list_output = [0] * len(self.encoded_feature_names)
 
-            return temp.tail(test.shape[0]).reset_index(drop=True)
+                idx = 0
+                for cat_name in self.categorical_feature_names:
+                    if cat_name in self.binary_cat_feats:
+                        feat = cat_name
+                        idx_cat = self.encoded_feature_names.index(feat)
+                    else:
+                        try:
+                            # Some values can go to float and must be back to int
+                            feat = f'{cat_name}_{str(int(float(row[idx])))}'
+                            idx_cat = self.encoded_feature_names.index(feat)
+                        except ValueError:
+                            feat = f'{cat_name}_{row[idx]}'
+                            idx_cat = self.encoded_feature_names.index(feat)
+                    if cat_name in self.binary_cat_feats:
+                        list_output[idx_cat] = int(float(row[idx]))
+                    else:
+                        list_output[idx_cat] = 1
+                    idx += 1
+                for i in range(len(self.continuous_feature_indexes)):
+                    if (len(self.encoded_feature_names) - len(self.continuous_feature_names)) == 0:
+                        # Only numerical
+                        list_output[int(idx_n)] = row[0]
+                    else:
+                        # Mixed
+                        list_output[len(self.encoded_feature_names) - len(self.continuous_feature_names) + i] = row[idx]
+                        idx += 1
+
+                output_list.append(list_output)
+
+            output_df = pd.DataFrame(output_list)
+            output_df.columns = list(self.one_hot_encoded_data.drop(columns=['output']).columns)
+
+            return output_df
 
     def get_dev_data(self, model_interface, desired_class, filter_threshold=0.5):
         """Constructs dev data by extracting part of the test data for which finding counterfactuals make sense."""

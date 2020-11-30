@@ -46,7 +46,7 @@ class ExplainerBase:
         features_sorted = sorted(normalized_quantiles.items(), key=lambda kv: kv[1], reverse=True)
         for ix in range(len(features_sorted)):
             features_sorted[ix] = features_sorted[ix][0]
-        decimal_prec = self.data_interface.get_decimal_precisions()[0:len(self.encoded_continuous_feature_indexes)]
+        decimal_prec = self.data_interface.get_decimal_precisions()[-len(self.encoded_continuous_feature_indexes):]
 
         for cf_ix in range(self.total_CFs):
             for feature in features_sorted:
@@ -68,22 +68,37 @@ class ExplainerBase:
 def do_linear_search(self, diff, decimal_prec, query_instance, cf_ix, feat_ix, final_cfs_sparse, current_pred):
     """Performs a greedy linear search - moves the continuous features in CFs towards original values in query_instance greedily until the prediction class changes."""
 
+    num_offset = query_instance.shape[1] - len(self.encoded_continuous_feature_indexes) # this is the offset for numerical features, as the categorical features come first, we must adjust the index
+
+    corr_feat_ix = feat_ix-num_offset
+
     old_diff = diff
-    change = (10**-decimal_prec[feat_ix])/(self.cont_maxx[feat_ix] - self.cont_minx[feat_ix]) # the minimal possible change for a feature
+    change = (10**-decimal_prec[corr_feat_ix])/(self.cont_maxx[corr_feat_ix] - self.cont_minx[corr_feat_ix]) # the minimal possible change for a feature
+    max_tolerance = 10
+    n_tolerance = 0
     while((abs(diff)>10e-4) and (np.sign(diff*old_diff) > 0) and
           ((self.target_cf_class == 0 and current_pred < self.stopping_threshold) or
-           (self.target_cf_class == 1 and current_pred > self.stopping_threshold))): # move until the prediction class changes
-        old_val = final_cfs_sparse[cf_ix].ravel()[feat_ix]
-        final_cfs_sparse[cf_ix].ravel()[feat_ix] += np.sign(diff)*change
+           (self.target_cf_class == 1 and current_pred > self.stopping_threshold)) and
+          (n_tolerance <= max_tolerance)): # move until the prediction class changes
+        old_val = final_cfs_sparse[cf_ix].ravel()[corr_feat_ix] # Still the same, looks to be the problem!!!!!
+        final_cfs_sparse[cf_ix].ravel()[corr_feat_ix] += np.sign(diff)*change # Originally equal to above, does not change
         current_pred = self.predict_fn(final_cfs_sparse[cf_ix])
+
+        if (old_diff == diff) or ((old_diff-diff) < 1e-5):
+            n_tolerance += 1
+        else:
+            n_tolerance = 0
+
         old_diff = diff
 
+
         if(((self.target_cf_class == 0 and current_pred > self.stopping_threshold) or (self.target_cf_class == 1 and current_pred < self.stopping_threshold))):
-            final_cfs_sparse[cf_ix].ravel()[feat_ix] = old_val
-            diff = query_instance.ravel()[feat_ix] - final_cfs_sparse[cf_ix].ravel()[feat_ix]
+            final_cfs_sparse[cf_ix].ravel()[corr_feat_ix] = old_val
+            diff = query_instance.ravel()[corr_feat_ix] - final_cfs_sparse[cf_ix].ravel()[corr_feat_ix]
             return final_cfs_sparse[cf_ix]
 
-        diff = query_instance.ravel()[feat_ix] - final_cfs_sparse[cf_ix].ravel()[feat_ix]
+        diff = query_instance.ravel()[corr_feat_ix] - final_cfs_sparse[cf_ix].ravel()[corr_feat_ix] # Does not change
+
 
     return final_cfs_sparse[cf_ix]
 

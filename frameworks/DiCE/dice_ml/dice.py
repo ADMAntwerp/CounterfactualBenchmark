@@ -1,6 +1,14 @@
 """Module pointing to different implementations of DiCE based on different frameworks such as Tensorflow or PyTorch."""
-
+import random as python_random
 import tensorflow as tf
+import numpy as np
+
+# Set seeds
+np.random.seed(42)
+python_random.seed(42)
+tf.random.set_random_seed(42)
+
+
 
 
 class Dice:
