@@ -10,7 +10,7 @@ class Converter:
         self.binary_cats = []
 
         for cat_f in cat_feats:
-            if len(full_df[cat_f].unique()) == 2:
+            if len(full_df[cat_f].unique()) <= 2:
                 self.binary_cats.append(cat_f)
 
         for cat_f in cat_feats:
@@ -45,7 +45,13 @@ class Converter:
 
         for idx, c_value in enumerate(data):
             if str(idx) in self.cat_feats and str(idx) not in self.binary_cats:
-                idx_oh = self.dict_feat_idx[str(idx)][c_value]
+                try:
+                    idx_oh = self.dict_feat_idx[str(idx)][c_value]
+                except KeyError:
+                    try:
+                        idx_oh = self.dict_feat_idx[str(idx)][str(c_value)]
+                    except KeyError:
+                        idx_oh = self.dict_feat_idx[str(idx)][str(int(float(c_value)))]
 
                 out_data[idx_oh] = 1
             else:
