@@ -120,7 +120,7 @@ class Explainer(object):
             # Set features according to combination and predict
             e_bits = ((c & bits) > 0).astype(int)
             t_obs[:, relevant_f] = np.multiply(1 - e_bits, obs[:, relevant_f]) \
-                                   + np.multiply(e_bits, self.def_values[relevant_f])
+                                   + np.array(np.multiply(e_bits, self.def_values[relevant_f]))
             score = (self.score_f(t_obs) - threshold)[0] * class_val
             if score < 0:
                 # We have a shorter explanation
