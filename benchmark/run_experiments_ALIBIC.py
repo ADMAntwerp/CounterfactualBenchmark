@@ -109,7 +109,7 @@ for dsName in VAR_TYPES.keys():
                                                 use_kdtree=True,
                                                 feature_range=(minFRang, maxFRang),
                                                 cat_vars=dict_oh if dict_oh else None,
-                                                ohe=True if cat_feats else False)
+                                                ohe=True if cat_feats and dict_oh else False)
 
                 try:
                     alibi_cfs.fit(selected_df_train.drop(columns=['output']).to_numpy())
