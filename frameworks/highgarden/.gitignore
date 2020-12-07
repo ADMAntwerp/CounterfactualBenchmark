@@ -1,0 +1,16 @@
+# ipython checkpoints #
+#######################
+highgarden/.ipynb_checkpoints/*
+highgarden/exploration/__pycache__/*
+
+# databases #
+#############
+*.csv
+*.xls
+*.xlsx
+
+
+# other #
+#########
+highgarden/other/*
+*.pyc
