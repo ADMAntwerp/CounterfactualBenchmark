@@ -53,4 +53,6 @@ def featred_random(prediction_function, obs_to_interprete, ennemy):
 
 def main(X, prediction_function, obs_to_interprete, **kwargs):
     enn = path_to_ennemy(X, prediction_function, obs_to_interprete, **kwargs)
+    if len(enn) == 0:
+        return []
     return featred_random(prediction_function, obs_to_interprete, enn)

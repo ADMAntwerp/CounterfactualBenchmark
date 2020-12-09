@@ -102,20 +102,26 @@ def seek_ennemies2(X, prediction_function, obs_to_interprete, n_layer, step, eno
         layer_enn = [x for x in layer_ if x[-1] == 1-PRED_CLASS]
         print('zoom')  
     else:
-        while len(ennemies) < 1:
+        max_n_limit = 100
+        n_limit = 0
+        while len(ennemies) < 1 and n_limit<max_n_limit:
             layer_ = generate_layer_with_pred(prediction_function, obs_to_interprete, X.shape[1], n=n_layer, segment=(a0, a1))
             layer_enn = [x for x in layer_ if x[-1] == 1-PRED_CLASS]
             ennemies.extend(layer_enn)
             i += 1
             a0 += step
             a1 += step
+            n_limit+=1
     print('Final nb of iterations ', i, 'Final radius', (a0,a1))
     return ennemies
 
 
 def growing_sphere_explanation(X, prediction_function, obs_to_interprete, n_layer=10000, step=1/100000000.0, enough_ennemies=1, moving_cost=l2):
     ennemies = seek_ennemies2(X, prediction_function, obs_to_interprete, n_layer, step, enough_ennemies)
-    nearest_ennemy = sorted(ennemies, key=lambda x: moving_cost(obs_to_interprete, x[:-1]))[0][:-1]
+    if len(ennemies) > 0:
+        nearest_ennemy = sorted(ennemies, key=lambda x: moving_cost(obs_to_interprete, x[:-1]))[0][:-1]
+    else:
+        nearest_ennemy = []
     return nearest_ennemy
 
 def main(X, prediction_function, obs_to_interprete, **kwargs):
