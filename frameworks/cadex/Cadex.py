@@ -108,7 +108,7 @@ class Cadex:
                 mask = mask * change_mask
 
         # Initialize the Adam optimizer, giving it the calculated input mask
-        adam = MaskedAdam(K.constant(mask))
+        adam = MaskedAdam(K.constant(mask, dtype='float64'))
 
         self.model.compile(optimizer=adam, loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -165,9 +165,10 @@ class Cadex:
         for attr_set in categorical_attributes:
             max_vals = np.argsort(input_mod[0, attr_set])[::-1]
             # check if the second highest attribute is above the threshold, and if so set it to one
-            if input_mod[0, attr_set[max_vals[1]]] > threshold:
-                input_target[0, attr_set] = 0
-                input_target[0, attr_set[max_vals[1]]] = 1
+            if len(max_vals)>1:
+              if input_mod[0, attr_set[max_vals[1]]] > threshold:
+                  input_target[0, attr_set] = 0
+                  input_target[0, attr_set[max_vals[1]]] = 1
 
         if np.any(input_target != input_mod):
             updated_weights = input_target - input
@@ -208,7 +209,8 @@ class Cadex:
         return self.input_modifier.transform(input)
 
     def reset(self):
-        K.set_value(self.input_modifier.weights[0], np.zeros(K.get_variable_shape(self.input_modifier.weights[0])))
+        K.set_value(self.input_modifier.weights[0], np.zeros(self.input_modifier.get_weights()[0].shape))
+        # K.set_value(self.input_modifier.weights[0], np.zeros(K.get_variable_shape(self.input_modifier.weights[0])))
 
 class InputAddLayer(Layer):
     '''
