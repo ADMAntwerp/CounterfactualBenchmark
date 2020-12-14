@@ -2,9 +2,9 @@
     "idx": 2,
     "mode": "vanilla",
     "model": "german",
-    "start": 1581914413.2226696,
-    "end": 1581914438.8672779,
-    "time_taken": 25.64460825920105,
+    "start": 1607941398.7996633,
+    "end": 1607941406.9771724,
+    "time_taken": 8.177509069442749,
     "success": true,
     "info": {
         "checking_account": "1",
@@ -156,14 +156,14 @@
                 "sequence": [
                     "WaitYears"
                 ],
-                "params": "Action: WaitYears(-0.09990237)",
+                "params": "Action: WaitYears(-0.09990131)",
                 "p": [
-                    -0.09990236908197403
+                    -0.09990131109952927
                 ],
-                "f": 0.14591187238693237,
-                "loss": 120524208.0,
+                "f": 0.14591194689273834,
+                "loss": 120524168.0,
                 "success": false,
-                "cost": 993198.625,
+                "cost": 993103.875,
                 "initial_instance_info": {
                     "checking_account": "1",
                     "loan_duration": 18.000000043349537,
@@ -199,7 +199,7 @@
                     "other_debtors_guarantors": "0",
                     "present_residence_since": 4.000000058211611,
                     "property": "3",
-                    "age_in_years": 18.84938953259817,
+                    "age_in_years": 18.849399100353484,
                     "other_installment_plans": "0",
                     "housing": "0",
                     "existing_credit": 1.0000000134719529,
@@ -255,7 +255,7 @@
                     0.0,
                     0.0,
                     1.0,
-                    -1.4605400562286377,
+                    -1.4605392217636108,
                     1.0,
                     0.0,
                     0.0,

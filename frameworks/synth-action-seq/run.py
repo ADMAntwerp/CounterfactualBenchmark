@@ -114,27 +114,34 @@ def run_on_instance(options, instance_id, sav_dir=None):
         # return dict(instance=instance)
 
 
-def run_on_instance(options, instance_id, sav_dir=None):
+def run_on_instance(action_names, data_filename, exp_name, instance_id, length, mode, model_ckpt, model_name, sav_dir=None):
     if sav_dir is not None:
 	    sav_dir = os.path.join(sav_dir, str(instance_id))
 	    if not os.path.exists(sav_dir):
 	        os.makedirs(sav_dir) 
 
     with tf.Session() as session:
-        env = load_env(options.model_name, options.data_filename, used_actions=options.action_names)
-        model = load_model(options.model_name, options.model_ckpt)
+
+        env = load_env(model_name, data_filename, used_actions=action_names)
+
+        model = load_model(model_name, model_ckpt)
+
         instance, label, instance_id = pick_instance(model, env, idx=instance_id)
-        run_info = start_recording(instance_id, options)
+
+        run_info = start_recording(instance_id, mode, model_name)
+
         data, actions, features, target_label = env
+
         for name, feature in features.items():
             feature.initialize_tf_variables()
-        if options.model_name == 'quickdraw':
+
+        if model_name == 'quickdraw':
             actions = [action.set_p_selector(i, len(actions)) for i, action in enumerate(actions)]
 
-        heuristics = load_heuristics(options.mode, actions, model, options.length)
+        heuristics = load_heuristics(mode, actions, model, length)
         search = SequenceSearch(model, actions, heuristics, sav_dir=sav_dir, config=base_config)
 
-        if options.model_name == 'quickdraw':
+        if model_name == 'quickdraw':
             result = search.find_correction(instance.reshape((1, instance.shape[0], instance.shape[1])),
                                         np.array([target_label]), session)
         else:
@@ -146,19 +153,19 @@ def run_on_instance(options, instance_id, sav_dir=None):
         return end_recording(run_info, out)
 
 
-def start_recording(target_idx, options):
-    info = create_run_info(target_idx, options)
+def start_recording(target_idx, mode, model_name):
+    info = create_run_info(target_idx, mode, model_name)
     print(
         "\n\n______________________________________________________________________________________________________")
     print(target_idx, info['start'])
-    print('Starting %s run on item %d at %d' % (options.mode, target_idx, info['start']))
+    print('Starting %s run on item %d at %d' % (mode, target_idx, info['start']))
     return info
 
 
-def create_run_info(target_idx, options):
+def create_run_info(target_idx, mode, model_name):
     return dict(idx=target_idx,
-                mode=options.mode,
-                model=options.model_name,
+                mode=mode,
+                model=model_name,
                 start=time.time(),
                 end=0,
                 time_taken=0,
@@ -181,23 +188,34 @@ def end_recording(record, result):
     
 
 if __name__ == '__main__':
-    FLAGS = parse_args()
-    
-    sav_dir = os.path.join('results',FLAGS.exp_name,FLAGS.model_name)
-
-    if not os.path.exists(sav_dir):
-        os.makedirs(sav_dir) 
-
-    json.dump(vars(base_config), open(os.path.join(sav_dir, 'config.json'), 'w'), indent=4)
+    # FLAGS = parse_args()
+    #
+    # sav_dir = os.path.join('results',FLAGS.exp_name,FLAGS.model_name)
+    #
+    # if not os.path.exists(sav_dir):
+    #     os.makedirs(sav_dir)
+    #
+    # json.dump(vars(base_config), open(os.path.join(sav_dir, 'config.json'), 'w'), indent=4)
+    #
+    # print(FLAGS)
 
     for i in range(100):
     	# Pass a sav_dir below to save separate output files for each sequence searched
     	# This is useful for running it in a distributed manner
         a = time.time()
-        output = run_on_instance(FLAGS, i, sav_dir=None)
+        # output = run_on_instance(FLAGS, i, sav_dir=None)
+        output = run_on_instance(action_names=None,
+                               data_filename='data.npy',
+                               exp_name='sample_length_1',
+                               instance_id=0,
+                               length=1,
+                               mode='vanilla',
+                               model_ckpt='model.h5',
+                               model_name='german',
+                               sav_dir=None)
         tf.reset_default_graph()
         print('Time taken for instance', time.time()-a)
 
-        if FLAGS.model_name != 'quickdraw' or output['success']:
-            save_filename = os.path.join(sav_dir, ('run_%s.json' % (output['idx'])))
-            json.dump(output, open(save_filename, 'w+'), indent=4)
+        # if FLAGS.model_name != 'quickdraw' or output['success']:
+        #     save_filename = os.path.join(sav_dir, ('run_%s.json' % (output['idx'])))
+        #     json.dump(output, open(save_filename, 'w+'), indent=4)

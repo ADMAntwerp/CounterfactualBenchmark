@@ -2,9 +2,9 @@
     "idx": 4,
     "mode": "vanilla",
     "model": "german",
-    "start": 1581914462.2482443,
-    "end": 1581914481.3606853,
-    "time_taken": 19.112441062927246,
+    "start": 1607941415.9560833,
+    "end": 1607941424.4211087,
+    "time_taken": 8.465025424957275,
     "success": true,
     "info": {
         "checking_account": "1",
@@ -396,14 +396,14 @@
                 "sequence": [
                     "ChangeCreditAmount"
                 ],
-                "params": "Action: ChangeCreditAmount(-1.8688644)",
+                "params": "Action: ChangeCreditAmount(-1.8688643)",
                 "p": [
-                    -1.8688644170761108
+                    -1.8688642978668213
                 ],
-                "f": 0.13735568523406982,
-                "loss": 123235168.0,
+                "f": 0.137355774641037,
+                "loss": 123235184.0,
                 "success": false,
-                "cost": 10713395.0,
+                "cost": 10713333.0,
                 "initial_instance_info": {
                     "checking_account": "1",
                     "loan_duration": 24.00000013676026,
@@ -431,7 +431,7 @@
                     "loan_duration": 24.00000013676026,
                     "credit_history": "2",
                     "purpose": "2",
-                    "credit_amount": -2079.2177172433485,
+                    "credit_amount": -2079.2170394986006,
                     "saving_account": "1",
                     "present_employment": "1",
                     "installment_rate": 3.999999998971729,
@@ -470,7 +470,7 @@
                     0.0,
                     0.0,
                     0.0,
-                    -1.895219087600708,
+                    -1.895218849182129,
                     0.0,
                     1.0,
                     0.0,

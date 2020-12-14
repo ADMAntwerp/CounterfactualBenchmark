@@ -71,7 +71,7 @@ class ParamsSearch(object):
         self.final_instance, path = self.transform(self.instance, sequence, self.p)
         self.cost = self.get_cost(path, sequence)
 
-        self.output = model(self.final_instance)
+        self.output = model.model(self.final_instance)
         self.f = label_cost_fn(self.output, self.target_label)
 
         self.loss = tf.reduce_sum(self.cost) + tf.reduce_sum(self.c * self.f)

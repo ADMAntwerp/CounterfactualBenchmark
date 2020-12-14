@@ -1,24 +1,28 @@
+import pandas as pd
+
 from actions.feature import loader as feature_loader
 from common.paths import GERMAN_DIR, ADULT_DIR, FANNIEMAE_DIR, QUICKDRAW_DIR
-from models.german.model import GermanCredit
-from models.german.dataset import GermanDataset
-from models.german.actions import actions as german_actions
-from models.german.model import TRUE_LABEL as german_true_label
+from modelssynas.german.model import GermanCredit
+from modelssynas.german.dataset import GermanDataset
+from modelssynas.german.actions import actions as german_actions
+from modelssynas.german.model import TRUE_LABEL as german_true_label
 
-from models.adult.model import Adult
-from models.adult.dataset import AdultDataset
-from models.adult.actions import actions as adult_actions
-from models.adult.model import TRUE_LABEL as adult_true_label
+from modelssynas.adult.model import Adult
+from modelssynas.adult.dataset import AdultDataset
+from modelssynas.adult.actions import actions as adult_actions
+from modelssynas.adult.model import TRUE_LABEL as adult_true_label
 
-from models.fanniemae.model import FannieMae
-from models.fanniemae.dataset import FannieMaeDataset
-from models.fanniemae.actions import actions as fanniemae_actions
-from models.fanniemae.model import TRUE_LABEL as fanniemae_true_label
+from modelssynas.fanniemae.model import FannieMae
+from modelssynas.fanniemae.dataset import FannieMaeDataset
+from modelssynas.fanniemae.actions import actions as fanniemae_actions
+from modelssynas.fanniemae.model import TRUE_LABEL as fanniemae_true_label
 
-from models.quickdraw.model import QuickDraw
-from models.quickdraw.dataset import QuickdrawDataset
-from models.quickdraw.actions import actions as quickdraw_actions
-from models.quickdraw.model import TRUE_LABEL as quickdraw_true_label
+from modelssynas.quickdraw.model import QuickDraw
+from modelssynas.quickdraw.dataset import QuickdrawDataset
+from modelssynas.quickdraw.actions import actions as quickdraw_actions
+from modelssynas.quickdraw.model import TRUE_LABEL as quickdraw_true_label
+
+from modelssynas.generic.actions import get_actions as get_actions_generic
 
 
 def load_model(name, ckpt):
@@ -70,6 +74,42 @@ def load_quickdraw_model(ckpt_file):
     model.restore(str(ckpt_filepath))
     return model
 
+class generic_dataset:
+
+    def __init__(self, dataset):
+        self.data = dataset.drop(columns=['output']).to_numpy()
+        self.labels = pd.concat([dataset['output'], abs(dataset['output']-1)], axis=1).to_numpy()
+
+def setup_generic(dataset, cat_feats, num_feats, bin_feats, dict_feat_idx, used_actions=None):
+
+    raw_features = []
+    for idx in range(dataset.shape[1]):
+        if str(idx) in num_feats:
+            input_data = {'type': 'numeric',
+                          'name': str(idx),
+                          'idx': list(dataset.columns).index(str(idx)),
+                          'i': idx,
+                          'num_values': 1,
+                          'mean': dataset[str(idx)].mean(),
+                          'std': dataset[str(idx)].std()
+                          }
+            raw_features.append(input_data)
+        if str(idx) in cat_feats:
+            input_data = {'type': 'nominal',
+                          'name': str(idx),
+                          'values': [1]*len(dict_feat_idx[str(idx)].keys()),
+                          'idx': min(list(dict_feat_idx[str(idx)].values())),
+                          'i': idx,
+                          'num_values': len(dict_feat_idx[str(idx)].keys())}
+
+            raw_features.append(input_data)
+
+    features = feature_loader('', raw_features)
+    actions = get_actions_generic(features)
+
+    dataset = generic_dataset(dataset)
+
+    return dataset, actions, features, [0.0, 1.0]
 
 def setup_german(target_data, used_actions=None):
     data_filepath = GERMAN_DIR / target_data

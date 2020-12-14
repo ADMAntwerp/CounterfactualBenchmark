@@ -1,6 +1,6 @@
 class Config(object):
     def __init__(self, learning_rate=0.005, adam_beta1=0.99, adam_beta2=0.999, adam_eps=1e-8,
-                 binary_searches=9, init_c=1e5, c_upper_bound=1e10, iterations=200000,
+                 binary_searches=9, init_c=1e5, c_upper_bound=1e10, iterations=10000,
                  starting_cost=1e10):
         self.learning_rate = learning_rate
         self.adam_beta1 = adam_beta1

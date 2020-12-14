@@ -2,9 +2,9 @@
     "idx": 0,
     "mode": "vanilla",
     "model": "german",
-    "start": 1581914376.6283195,
-    "end": 1581914393.4008424,
-    "time_taken": 16.772522926330566,
+    "start": 1607941382.247756,
+    "end": 1607941390.4892046,
+    "time_taken": 8.241448640823364,
     "success": true,
     "info": {
         "checking_account": "1",

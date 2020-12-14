@@ -102,6 +102,15 @@ class CategoricFeature(BaseFeature):
                 feature_vector.append(self.value_map[i].index(val))
             return np.argmax(feature_vector)
 
+    def change_feature_random(self, instance, value_idx, use_tensor):
+
+        value_remover = -1 * (self.one_hot_selector - 1.)
+        random_mod_idx = np.random.choice(np.where(value_remover.eval()==0)[0])
+        value_setter = np.zeros(value_remover.eval().shape, dtype='float32')
+        value_setter[random_mod_idx] = 1.0
+        value_setter = tf.convert_to_tensor(value_setter)
+        return instance * value_remover + value_setter
+
     def change_feature_value(self, instance, value_idx, use_tensor):
         if use_tensor:
             value_remover = -1 * (self.one_hot_selector - 1.)
@@ -142,6 +151,15 @@ class StrokeFeature(BaseFeature):
             d = np.sqrt(square_d)
             return d
 
+    def change_feature_random(self, instance, value_idx, use_tensor):
+
+        value_remover = -1 * (self.one_hot_selector - 1.)
+        random_mod_idx = np.random.choice(np.where(value_remover.eval()==0)[0])
+        value_setter = np.zeros(value_remover.eval().shape, dtype='float32')
+        value_setter[random_mod_idx] = 1.0
+        value_setter = tf.convert_to_tensor(value_setter)
+        return instance * value_remover + value_setter
+
     def change_feature_value(self, instance, param, use_tensor):
         if use_tensor:
             selector = self.selector_tf
@@ -154,12 +172,13 @@ class StrokeFeature(BaseFeature):
         return instance - current_vector + param_vector
 
 
-def loader(feature_file):
+def loader(feature_file, raw_features = None):
     """loader for numeric features
     :param feature_file: json file containing feature meta info
     :return: list of Feature objects
     """
-    raw_features = json.loads(open(feature_file, 'r').read())
+    if raw_features is None:
+        raw_features = json.loads(open(feature_file, 'r').read())
     features = dict()
     input_dim = sum(
         [feature['num_values'] for feature in raw_features if feature['type'] != 'class'])

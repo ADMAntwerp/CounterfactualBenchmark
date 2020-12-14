@@ -1,6 +1,6 @@
 import tensorflow as tf
 from common.paths import QUICKDRAW_DIR
-from models.quickdraw.dataset import QuickdrawDataset
+from modelssynas.quickdraw.dataset import QuickdrawDataset
 
 # loss: 0.017243763625621796
 # acc: 0.9935
