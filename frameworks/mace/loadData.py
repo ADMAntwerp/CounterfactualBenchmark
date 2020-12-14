@@ -546,8 +546,8 @@ class DatasetAttribute(object):
       assert parent_name_long != -1, 'Parent ID set for non-hot attribute.'
       assert parent_name_kurz != -1, 'Parent ID set for non-hot attribute.'
       if attr_type == 'sub-categorical':
-        assert lower_bound == 0
-        assert upper_bound == 1
+        assert lower_bound == 0 or lower_bound == 1
+        assert upper_bound == 1 or upper_bound == 0
       if attr_type == 'sub-ordinal':
         # the first elem in thermometer is always on, but the rest may be on or off
         assert lower_bound == 0 or lower_bound == 1
@@ -592,7 +592,7 @@ class DatasetAttribute(object):
     self.upper_bound = upper_bound
 
 
-def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True, meta_param = None):
+def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_flag = True, meta_param = None, df=None, df_oh=None, cat_feats=None, num_feats=None, bin_feats=None):
 
   def getInputOutputColumns(data_frame):
     all_data_frame_cols = data_frame.columns.values
@@ -617,7 +617,52 @@ def loadDataset(dataset_name, return_one_hot, load_from_cache = False, debug_fla
     except:
       if debug_flag: print('failed. Re-creating dataset...')
 
-  if dataset_name == 'adult':
+  if dataset_name == 'generic':
+    data_frame_non_hot = df
+    input_cols = cat_feats + num_feats ## must be in order
+    output_col = 'output'
+    attributes_non_hot = {}
+
+    attributes_non_hot[output_col] = DatasetAttribute(
+      attr_name_long=output_col,
+      attr_name_kurz='y',
+      attr_type='binary',
+      node_type='output',
+      actionability='none',
+      mutability=False,
+      parent_name_long=-1,
+      parent_name_kurz=-1,
+      lower_bound=data_frame_non_hot[output_col].min(),
+      upper_bound=data_frame_non_hot[output_col].max())
+
+    for col_idx, col_name in enumerate(input_cols):
+
+      if col_name in num_feats:
+        attr_type = 'numeric-real'
+        actionability = 'any'
+        mutability = True
+      elif col_name in bin_feats:
+        attr_type = 'binary'
+        actionability = 'any'  # 'none'
+        mutability = True
+      else:
+        attr_type = 'categorical'
+        actionability = 'any'
+        mutability = True
+
+      attributes_non_hot[col_name] = DatasetAttribute(
+        attr_name_long=col_name,
+        attr_name_kurz=f'x{col_idx}',
+        attr_type=attr_type,
+        node_type='input',
+        actionability=actionability,
+        mutability=mutability,
+        parent_name_long=-1,
+        parent_name_kurz=-1,
+        lower_bound=data_frame_non_hot[col_name].min(),
+        upper_bound=data_frame_non_hot[col_name].max())
+
+  elif dataset_name == 'adult':
 
     data_frame_non_hot = load_adult_data_new()
     data_frame_non_hot = data_frame_non_hot.reset_index(drop=True)
@@ -1148,6 +1193,7 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
       np.zeros(num_unique_values - val)
     )
 
+  list_dummies = []
   for col_name in data_frame.columns.values:
 
     if attributes[col_name].attr_type not in {'categorical', 'ordinal'}:
@@ -1195,7 +1241,12 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
       data_frame_dummies = pd.DataFrame(data=tmp, columns=new_col_names_long)
 
     # Update data_frame
-    data_frame = pd.concat([data_frame.drop(columns = old_col_name_long), data_frame_dummies], axis=1)
+    data_frame_out = pd.concat([pd.DataFrame(data_frame_dummies.to_numpy()),
+                                pd.DataFrame(data_frame.drop(columns=old_col_name_long).to_numpy())], axis=1)
+    data_frame_out.columns =  list(data_frame_dummies) + list(data_frame.drop(columns = old_col_name_long).columns)
+    data_frame = data_frame_out
+    list_dummies.append(list(data_frame_dummies))
+    # data_frame = pd.concat([data_frame.drop(columns = old_col_name_long), data_frame_dummies], axis=1)
 
     # Update attributes
     del attributes[old_col_name_long]
@@ -1214,5 +1265,15 @@ def getOneHotEquivalent(data_frame_non_hot, attributes_non_hot):
         lower_bound = data_frame[new_col_name_long].min(),
         upper_bound = data_frame[new_col_name_long].max())
 
+  correct_order_columns = ['output']
+  oh_col_num = 0
+  for i in range(data_frame_non_hot.shape[1]-1):
+    if str(i) in list(data_frame.columns):
+      correct_order_columns.append(str(i))
+    else:
+      correct_order_columns += list_dummies[oh_col_num]
+      assert str(i) == list_dummies[oh_col_num][0].split('_')[0]
+      oh_col_num += 1
+  data_frame = data_frame[correct_order_columns]
   return data_frame, attributes
 
