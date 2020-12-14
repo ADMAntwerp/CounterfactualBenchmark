@@ -1,0 +1,12 @@
+{
+    "learning_rate": 0.005,
+    "adam_beta1": 0.99,
+    "adam_beta2": 0.999,
+    "adam_eps": 1e-08,
+    "starting_cost": 10000000000.0,
+    "binary_searches": 9,
+    "init_c": 100000.0,
+    "c_upper_bound": 10000000000.0,
+    "c_lower_bound": 100000.0,
+    "iterations": 200000
+}

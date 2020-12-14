@@ -1,0 +1,32 @@
+{
+    "idx": 72,
+    "mode": "vanilla",
+    "model": "german",
+    "start": 1581915840.0162597,
+    "end": 1581915857.7899997,
+    "time_taken": 17.77374005317688,
+    "success": false,
+    "info": {
+        "checking_account": "1",
+        "loan_duration": 24.00000013676026,
+        "credit_history": "2",
+        "purpose": "3",
+        "credit_amount": 1823.0000068663974,
+        "saving_account": "1",
+        "present_employment": "0",
+        "installment_rate": 3.999999998971729,
+        "personal_status": "2",
+        "other_debtors_guarantors": "0",
+        "present_residence_since": 2.0000000250857566,
+        "property": "1",
+        "age_in_years": 30.000000111825784,
+        "other_installment_plans": "1",
+        "housing": "1",
+        "existing_credit": 1.0000000134719529,
+        "job": "3",
+        "liable_persons": 1.9999999653381484,
+        "telephone": "0",
+        "foreign_worker": "0"
+    },
+    "output": "Not Found"
+}

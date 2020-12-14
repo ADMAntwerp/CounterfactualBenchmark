@@ -1,0 +1,249 @@
+[
+  {
+    "type": "ordinal",
+    "name": "checking_account",
+    "values": [
+      14,
+      11,
+      12,
+      13
+    ],
+    "idx": 0,
+    "i": 0,
+    "num_values": 4
+  },
+  {
+    "type": "numeric",
+    "name": "loan_duration",
+    "idx": 4,
+    "i": 1,
+    "num_values": 1,
+    "mean": 20.878888888888888,
+    "std": 12.125812636634521
+  },
+  {
+    "type": "nominal",
+    "name": "credit_history",
+    "values": [
+      30,
+      31,
+      32,
+      33,
+      34
+    ],
+    "idx": 5,
+    "i": 2,
+    "num_values": 5
+  },
+  {
+    "type": "nominal",
+    "name": "purpose",
+    "values": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      410
+    ],
+    "idx": 10,
+    "i": 3,
+    "num_values": 11
+  },
+  {
+    "type": "numeric",
+    "name": "credit_amount",
+    "idx": 21,
+    "i": 4,
+    "num_values": 1,
+    "mean": 3308.26,
+    "std": 2842.6675060896196
+  },
+  {
+    "type": "ordinal",
+    "name": "saving_account",
+    "values": [
+      65,
+      61,
+      62,
+      63,
+      64
+    ],
+    "idx": 22,
+    "i": 5,
+    "num_values": 5
+  },
+  {
+    "type": "ordinal",
+    "name": "present_employment",
+    "values": [
+      71,
+      72,
+      73,
+      74,
+      75
+    ],
+    "idx": 27,
+    "i": 6,
+    "num_values": 5
+  },
+  {
+    "type": "numeric",
+    "name": "installment_rate",
+    "idx": 32,
+    "i": 7,
+    "num_values": 1,
+    "mean": 2.948888888888889,
+    "std": 1.1272626081150394
+  },
+  {
+    "type": "nominal",
+    "name": "personal_status",
+    "values": [
+      91,
+      92,
+      93,
+      94,
+      95
+    ],
+    "idx": 33,
+    "i": 8,
+    "num_values": 5
+  },
+  {
+    "type": "nominal",
+    "name": "other_debtors_guarantors",
+    "values": [
+      101,
+      102,
+      103
+    ],
+    "idx": 38,
+    "i": 9,
+    "num_values": 3
+  },
+  {
+    "type": "numeric",
+    "name": "present_residence_since",
+    "idx": 41,
+    "i": 10,
+    "num_values": 1,
+    "mean": 2.8455555555555554,
+    "std": 1.1043007954871626
+  },
+  {
+    "type": "ordinal",
+    "name": "property",
+    "values": [
+      124,
+      123,
+      122,
+      121
+    ],
+    "idx": 42,
+    "i": 11,
+    "num_values": 4
+  },
+  {
+    "type": "numeric",
+    "name": "age_in_years",
+    "idx": 46,
+    "i": 12,
+    "num_values": 1,
+    "mean": 35.595555555555556,
+    "std": 11.46573553497658
+  },
+  {
+    "type": "nominal",
+    "name": "other_installment_plans",
+    "values": [
+      141,
+      142,
+      143
+    ],
+    "idx": 47,
+    "i": 13,
+    "num_values": 3
+  },
+  {
+    "type": "nominal",
+    "name": "housing",
+    "values": [
+      151,
+      152,
+      153
+    ],
+    "idx": 50,
+    "i": 14,
+    "num_values": 3
+  },
+  {
+    "type": "numeric",
+    "name": "existing_credit",
+    "idx": 53,
+    "i": 15,
+    "num_values": 1,
+    "mean": 1.4055555555555554,
+    "std": 0.5763604410650434
+  },
+  {
+    "type": "ordinal",
+    "name": "job",
+    "values": [
+      171,
+      172,
+      173,
+      174
+    ],
+    "idx": 54,
+    "i": 16,
+    "num_values": 4
+  },
+  {
+    "type": "numeric",
+    "name": "liable_persons",
+    "idx": 58,
+    "i": 17,
+    "num_values": 1,
+    "mean": 1.1566666666666667,
+    "std": 0.36348620637133155
+  },
+  {
+    "type": "nominal",
+    "name": "telephone",
+    "values": [
+      191,
+      192
+    ],
+    "idx": 59,
+    "i": 18,
+    "num_values": 2
+  },
+  {
+    "type": "nominal",
+    "name": "foreign_worker",
+    "values": [
+      201,
+      202
+    ],
+    "idx": 61,
+    "i": 19,
+    "num_values": 2
+  },
+  {
+    "type": "class",
+    "name": "class",
+    "values": [
+      1,
+      2
+    ],
+    "idx": 63,
+    "i": 20,
+    "num_values": 2
+  }
+]

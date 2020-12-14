@@ -1,0 +1,35 @@
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv1d (Conv1D)              (None, 128, 8)            168
+_________________________________________________________________
+conv1d_1 (Conv1D)            (None, 128, 8)            328
+_________________________________________________________________
+conv1d_2 (Conv1D)            (None, 128, 8)            328
+_________________________________________________________________
+flatten (Flatten)            (None, 1024)              0
+_________________________________________________________________
+dense (Dense)                (None, 1024)              1049600
+_________________________________________________________________
+dropout (Dropout)            (None, 1024)              0
+_________________________________________________________________
+dense_1 (Dense)              (None, 2)                 2050
+=================================================================
+Total params: 1,052,474
+Trainable params: 1,052,474
+Non-trainable params: 0
+_________________________________________________________________
+
+all layers except flatten & dropout have relu activation
+loss: 0.017243763625621796
+acc: 0.9935
+
+Trained on training set of 32000 generated data, comprising of
+- 50% variations of a single canonical cat drawing from Quickdraw dataset
+- 25% variations of the same cat drawing, with variable number of strokes removed
+- 25% variations of false drawings from the Quickdraw dataset
+Training set breakdown and model structure is identical to https://github.com/xinpl/Polaris
+
+Our system ran tests on samples from 1000 generated data, comprising of
+- 100% variations of the same cat drawing, with variable number of strokes removed, of upto 10
+

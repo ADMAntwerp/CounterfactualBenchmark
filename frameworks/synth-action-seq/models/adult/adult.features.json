@@ -1,0 +1,203 @@
+[
+  {
+    "type": "numeric",
+    "name": "Age",
+    "idx": 0,
+    "i": 0,
+    "num_values": 1,
+    "mean": 38.55143861028527,
+    "std": 13.188626813553753
+  },
+  {
+    "type": "nominal",
+    "name": "Workclass",
+    "values": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "num_values": 7,
+    "idx": 1,
+    "i": 1
+  },
+  {
+    "type": "numeric",
+    "name": "Education num",
+    "idx": 8,
+    "i": 2,
+    "num_values": 1,
+    "mean": 10.117275608737316,
+    "std": 2.55035647090531
+  },
+  {
+    "type": "nominal",
+    "name": "Marital Status",
+    "values": [
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26
+    ],
+    "num_values": 7,
+    "idx": 9,
+    "i": 3
+  },
+  {
+    "type": "nominal",
+    "name": "Occupation",
+    "values": [
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      310,
+      311,
+      312,
+      313
+    ],
+    "num_values": 14,
+    "idx": 16,
+    "i": 4
+  },
+  {
+    "type": "nominal",
+    "name": "Relationship",
+    "values": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    "num_values": 6,
+    "idx": 30,
+    "i": 5
+  },
+  {
+    "type": "nominal",
+    "name": "Race",
+    "values": [
+      50,
+      51,
+      52,
+      53,
+      54
+    ],
+    "num_values": 5,
+    "idx": 36,
+    "i": 6
+  },
+  {
+    "type": "nominal",
+    "name": "Sex",
+    "values": [
+      60,
+      61
+    ],
+    "num_values": 2,
+    "idx": 41,
+    "i": 7
+  },
+  {
+    "type": "numeric",
+    "name": "Capital Gain",
+    "idx": 43,
+    "i": 8,
+    "num_values": 1,
+    "mean": 1096.2487284699869,
+    "std": 7461.551431418753
+  },
+  {
+    "type": "numeric",
+    "name": "Capital Loss",
+    "idx": 44,
+    "i": 9,
+    "num_values": 1,
+    "mean": 87.6598933634733,
+    "std": 402.3458367429448
+  },
+  {
+    "type": "numeric",
+    "name": "Hours/Week",
+    "idx": 45,
+    "i": 10,
+    "num_values": 1,
+    "mean": 40.947885697437286,
+    "std": 12.020288901700026
+  },
+  {
+    "type": "nominal",
+    "name": "Native country",
+    "values": [
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      710,
+      711,
+      712,
+      713,
+      714,
+      715,
+      716,
+      717,
+      718,
+      719,
+      720,
+      721,
+      722,
+      723,
+      724,
+      725,
+      726,
+      727,
+      728,
+      729,
+      730,
+      731,
+      732,
+      733,
+      734,
+      735,
+      736,
+      737,
+      738,
+      739,
+      740
+    ],
+    "num_values": 41,
+    "idx": 46,
+    "i": 11
+  },
+  {
+    "type": "class",
+    "name": "Income",
+    "values": [
+      80,
+      81
+    ],
+    "num_values": 2,
+    "idx": 87,
+    "i": 12
+  }
+]
