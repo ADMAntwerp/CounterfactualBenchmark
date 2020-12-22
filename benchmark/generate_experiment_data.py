@@ -52,7 +52,7 @@ for dsName in VAR_TYPES.keys():
             # Load model
             model = CFmodel.CreateModel(dsName, str(int(c)))
 
-            # Sample 10 CF for each category in the DS
+            # Sample 100 CF for each category in the DS
             if len(df_oh) > 0:
                 df_model = df_oh
                 df_model_test = df_oh_test
@@ -61,14 +61,14 @@ for dsName in VAR_TYPES.keys():
                 df_model_test = df_test
 
             if df_test[(df_test['output'] == model.predict(df_model_test.drop(columns=['output']))) &
-                       (df_test['output'] == 0)].shape[0] >= 10:
+                       (df_test['output'] == 0)].shape[0] >= 100:
                 df_cf = df_test[(df_test['output'] == model.predict(df_model_test.drop(columns=['output']))) &
-                                (df_test['output'] == 0)].sample(10, random_state=42).copy()
+                                (df_test['output'] == 0)].sample(100, random_state=42).copy()
             else:
                 matches = df[((df['output'] == model.predict(df_model.drop(columns=['output']))))
                            & (df['output'] == 0)]
                 if matches.shape[0] > 0:
-                    df_cf = matches.sample(10 if matches.shape[0] >= 10 else matches.shape[0], random_state=42).copy()
+                    df_cf = matches.sample(100 if matches.shape[0] >= 100 else matches.shape[0], random_state=42).copy()
                 else:
                     df_cf = pd.DataFrame([])
                     print(f'WARNING, THE DATASET {dsName} DOES NOT HAVE ANY CORRECT PREDICTION FOR THE CLASS {str(int(c))}')
