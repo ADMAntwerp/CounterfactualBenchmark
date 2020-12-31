@@ -47,50 +47,59 @@ for dsName in VAR_TYPES.keys():
     # Iterate over the classes
     for c in list(df['output'].unique()):
 
-        cf = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_CFDATASET.csv').drop(columns=['Unnamed: 0'])
+        try:
 
-        # If there are CF to be analyzed
-        if cf.shape[0] > 0:
+            cf = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_CFDATASET.csv').drop(columns=['Unnamed: 0'])
 
-            # Load train data
-            df_train = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TRAINDATASET.csv').drop(columns=['Unnamed: 0'])
-            # Load test data
-            df_test = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TESTDATASET.csv').drop(columns=['Unnamed: 0'])
-            # Load OH if existent
-            if cat_feats:
+            # If there are CF to be analyzed
+            if cf.shape[0] > 0:
+
                 # Load train data
-                df_oh_train = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TRAINOHDATASET.csv').drop(columns=['Unnamed: 0'])
+                df_train = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TRAINDATASET.csv').drop(columns=['Unnamed: 0'])
                 # Load test data
-                df_oh_test = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TESTOHDATASET.csv').drop(columns=['Unnamed: 0'])
+                df_test = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TESTDATASET.csv').drop(columns=['Unnamed: 0'])
+                # Load OH if existent
+                if cat_feats:
+                    # Load train data
+                    df_oh_train = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TRAINOHDATASET.csv').drop(columns=['Unnamed: 0'])
+                    # Load test data
+                    df_oh_test = pd.read_csv(f'../experiments_data/{str(int(c))}_{dsName}_TESTOHDATASET.csv').drop(columns=['Unnamed: 0'])
 
-            # Load model
-            model_keras = load_model(f'../models/{str(int(c))}_{dsName}.h5', compile=False)
-            model = CFmodel.CreateModel(dsName, str(int(c)))
+                # Load model
+                model_keras = load_model(f'../models/{str(int(c))}_{dsName}.h5', compile=False)
+                model = CFmodel.CreateModel(dsName, str(int(c)))
 
-            cfs_LORE = []
-            for idx_cf in range(cf.shape[0]):
-
-                if idx_cf > 3:
-
+                cfs_LORE = []
+                for idx_cf in range(cf.shape[0]):
                     # Start to measure time to get CF
+                    print(c, dsName)
                     start_time = time.time()
 
                     converterLORE = OHConverter.Converter(df,
                                                           cat_feats,
-                                                          list(df_oh.columns if df_oh else df.columns))
+                                                          list(df_oh.columns if len(df_oh) > 0 else df.columns))
 
                     cfLORE = test_lore.main(df_train,
                                             cat_feats,
                                             'output',
-                                            list(df_oh.columns if df_oh else df.columns),
+                                            list(df_oh.columns if len(df_oh) > 0 else df.columns),
                                             model,
                                             cf.iloc[idx_cf]
                                             )
 
                     # Measure time to get CF
                     timeRunLORE = [idx_cf, int(c), dsName, time.time() - start_time]
-                    pd.DataFrame(timeRunLORE).T.to_csv('../cfoutput/TIME_LORE.csv', mode='a', header=False, index=False)
+                    if len(cfLORE) > 0:
+                        pd.DataFrame(timeRunLORE).T.to_csv('../cfoutput/TIME_LORE.csv', mode='a', header=False, index=False)
 
-                    cfs_LORE.append(cfLORE)
+                        cfs_LORE.append(cfLORE.to_numpy()[0].tolist())
+                    else:
+                        data_size = df_oh.shape[1] - 1 if len(df_oh) > 0 else df.shape[1] - 1
+                        cfs_LORE.append([np.NaN] * data_size)
 
-            pd.concat(cfs_LORE).to_csv(f'../cfoutput/{str(int(c))}_{dsName}_LORE.csv', index=False)
+                try:
+                    pd.DataFrame(cfs_LORE).to_csv(f'../cfoutput/{str(int(c))}_{dsName}_LORE.csv', index=False)
+                except ValueError:
+                    print('No results')
+        except FileNotFoundError:
+            print(f'{str(int(c))}_{dsName} has no data')
