@@ -35,17 +35,18 @@ def generateCf(record2explain, dataset, deltas, blackbox, deltachanges):
             for delta_cat in deltacats:
                 cf_updated = cf.copy()
                 for k_cat, v_cat in delta_cat.items():
-                    index = columns.index(k_cat)
-                    print(k_cat, v_cat)
-                    if v_cat in list(dataset['label_encoder'][k_cat].classes_):
-                        value = list(dataset['label_encoder'][k_cat].classes_).index(v_cat)
-                        print('#######################', value)
-                    elif int(v_cat) in dataset['label_encoder'][k_cat].classes_:
-                        value = list(dataset['label_encoder'][k_cat].classes_).index(int(v_cat))
-                    elif int(v_cat) in list(int(z) if re.sub('[-]', '', re.sub('[.]', '', str(z), count=1), count=1).isnumeric() else str(z) for z in dataset['label_encoder'][k_cat].classes_):
-                        temp_array = list(int(z) if re.sub('[-]', '', re.sub('[.]', '', str(z), count=1), count=1).isnumeric() else str(z) for z in dataset['label_encoder'][k_cat].classes_)
-                        value = list(dataset['label_encoder'][k_cat].classes_).index(temp_array.index(int(v_cat)))
-                    cf_updated[index] = value
+                    if k_cat not in dataset['continuous']:
+                        index = columns.index(k_cat)
+                        print(k_cat, v_cat)
+                        if v_cat in list(dataset['label_encoder'][k_cat].classes_):
+                            value = list(dataset['label_encoder'][k_cat].classes_).index(v_cat)
+                            print('#######################', value)
+                        elif int(v_cat) in dataset['label_encoder'][k_cat].classes_:
+                            value = list(dataset['label_encoder'][k_cat].classes_).index(int(v_cat))
+                        elif int(v_cat) in list(int(z) if re.sub('[-]', '', re.sub('[.]', '', str(z), count=1), count=1).isnumeric() else str(z) for z in dataset['label_encoder'][k_cat].classes_):
+                            temp_array = list(int(z) if re.sub('[-]', '', re.sub('[.]', '', str(z), count=1), count=1).isnumeric() else str(z) for z in dataset['label_encoder'][k_cat].classes_)
+                            value = list(dataset['label_encoder'][k_cat].classes_).index(temp_array.index(int(v_cat)))
+                        cf_updated[index] = value
                 cfs.append(cf_updated)
                 print('################################')
                 print('Original:')
@@ -97,32 +98,34 @@ def main(df, categorical_columns, class_name, ohc, model, cfData):
                                       returns_infos=True,
                                        sep=';', log=False)
 
-    dfX2E = build_df2explain(blackbox, X2E, dataset).to_dict('records')
-    # dfx = dfX2E[idx_record2explain]
-    dfx = record2explain
+    if len(explanation) > 0:
+        dfX2E = build_df2explain(blackbox, X2E, dataset).to_dict('records')
+        # dfx = dfX2E[idx_record2explain]
+        dfx = record2explain
 
-    # x = build_df2explain(blackbox, X2E[idx_record2explain].reshape(1, -1), dataset).to_dict('records')[0]
+        # x = build_df2explain(blackbox, X2E[idx_record2explain].reshape(1, -1), dataset).to_dict('records')[0]
 
-    print('x = %s' % dfx)
-    print('r = %s --> %s' % (explanation[0][1], explanation[0][0]))
-    for delta in explanation[1]:
-        print('delta', delta)
+        print('x = %s' % dfx)
+        print('r = %s --> %s' % (explanation[0][1], explanation[0][0]))
+        for delta in explanation[1]:
+            print('delta', delta)
 
-    covered = lore.get_covered(explanation[0][1], dfX2E, dataset)
-    print(len(covered))
-    print(covered)
+        covered = lore.get_covered(explanation[0][1], dfX2E, dataset)
+        print(len(covered))
+        print(covered)
 
-    print(explanation[0][0][dataset['class_name']], '<<<<')
+        print(explanation[0][0][dataset['class_name']], '<<<<')
 
-    def eval(x, y):
-        return 1 if x == y else 0
+        def eval(x, y):
+            return 1 if x == y else 0
 
-    precision = [1-eval(v, explanation[0][0][dataset['class_name']]) for v in y2E[covered]]
-    cfs = generateCf(record2explain, dataset, [explanation[0][1]], blackbox, explanation[1])
-    print(precision)
-    print(np.mean(precision), np.std(precision))
+        precision = [1-eval(v, explanation[0][0][dataset['class_name']]) for v in y2E[covered]]
+        cfs = generateCf(record2explain, dataset, [explanation[0][1]], blackbox, explanation[1])
+        print(precision)
+        print(np.mean(precision), np.std(precision))
 
-    return pd.DataFrame(converter.convert(cfs))
+        return pd.DataFrame(converter.convert(cfs))
+    return []
 
 class Converter:
 

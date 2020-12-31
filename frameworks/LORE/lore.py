@@ -29,52 +29,57 @@ def explain(record2explain, X2E, dataset, blackbox,
     # Generate Neighborhood
     dfZ, Z = ng_function(dfZ, x, blackbox, dataset)
 
-    # Build Decision Tree
-    dt, dt_dot = pyyadt.fit(dfZ, class_name, columns, features_type, discrete, continuous,
-                            filename=dataset['name'], path=path, sep=sep, log=log)
+    # Needed because in some situations it can only generate one class data on dfZ
+    if len(dfZ['output'].unique()) < 2:
+        explanation = []
+        infos = []
+    else:
+        # Build Decision Tree
+        dt, dt_dot = pyyadt.fit(dfZ, class_name, columns, features_type, discrete, continuous,
+                                filename=dataset['name'], path=path, sep=sep, log=log)
 
-    # Apply Black Box and Decision Tree on instance to explain
-    bb_outcome = blackbox.predict(x.reshape(1, -1))[0]
+        # Apply Black Box and Decision Tree on instance to explain
+        bb_outcome = blackbox.predict(x.reshape(1, -1))[0]
 
-    dfx = build_df2explain(blackbox, x.reshape(1, -1), dataset).to_dict('records')[0]
-    cc_outcome, rule, tree_path = pyyadt.predict_rule(dt, dfx, class_name, features_type, discrete, continuous)
+        dfx = build_df2explain(blackbox, x.reshape(1, -1), dataset).to_dict('records')[0]
+        cc_outcome, rule, tree_path = pyyadt.predict_rule(dt, dfx, class_name, features_type, discrete, continuous)
 
-    # Apply Black Box and Decision Tree on neighborhood
-    y_pred_bb = blackbox.predict(Z)
-    y_pred_cc, leaf_nodes = pyyadt.predict(dt, dfZ.to_dict('records'), class_name, features_type,
-                                           discrete, continuous)
+        # Apply Black Box and Decision Tree on neighborhood
+        y_pred_bb = blackbox.predict(Z)
+        y_pred_cc, leaf_nodes = pyyadt.predict(dt, dfZ.to_dict('records'), class_name, features_type,
+                                               discrete, continuous)
 
-    def predict(X):
-        y, ln, = pyyadt.predict(dt, X, class_name, features_type, discrete, continuous)
-        return y, ln
+        def predict(X):
+            y, ln, = pyyadt.predict(dt, X, class_name, features_type, discrete, continuous)
+            return y, ln
 
-    # Update labels if necessary
-    if class_name in label_encoder:
-        cc_outcome = label_encoder[class_name].transform(np.array([cc_outcome]))[0]
+        # Update labels if necessary
+        if class_name in label_encoder:
+            cc_outcome = label_encoder[class_name].transform(np.array([cc_outcome]))[0]
 
-    if class_name in label_encoder:
-        y_pred_cc = label_encoder[class_name].transform(y_pred_cc)
+        if class_name in label_encoder:
+            y_pred_cc = label_encoder[class_name].transform(y_pred_cc)
 
-    # Extract Coutnerfactuals
-    diff_outcome = get_diff_outcome(bb_outcome, possible_outcomes)
-    counterfactuals = pyyadt.get_counterfactuals(dt, tree_path, rule, diff_outcome,
-                                                 class_name, continuous, features_type)
+        # Extract Coutnerfactuals
+        diff_outcome = get_diff_outcome(bb_outcome, possible_outcomes)
+        counterfactuals = pyyadt.get_counterfactuals(dt, tree_path, rule, diff_outcome,
+                                                     class_name, continuous, features_type)
 
-    explanation = (rule, counterfactuals)
+        explanation = (rule, counterfactuals)
 
-    infos = {
-        'bb_outcome': bb_outcome,
-        'cc_outcome': cc_outcome,
-        'y_pred_bb': y_pred_bb,
-        'y_pred_cc': y_pred_cc,
-        'dfZ': dfZ,
-        'Z': Z,
-        'dt': dt,
-        'tree_path': tree_path,
-        'leaf_nodes': leaf_nodes,
-        'diff_outcome': diff_outcome,
-        'predict': predict,
-    }
+        infos = {
+            'bb_outcome': bb_outcome,
+            'cc_outcome': cc_outcome,
+            'y_pred_bb': y_pred_bb,
+            'y_pred_cc': y_pred_cc,
+            'dfZ': dfZ,
+            'Z': Z,
+            'dt': dt,
+            'tree_path': tree_path,
+            'leaf_nodes': leaf_nodes,
+            'diff_outcome': diff_outcome,
+            'predict': predict,
+        }
 
     if returns_infos:
         return explanation, infos

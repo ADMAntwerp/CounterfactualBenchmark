@@ -15,9 +15,9 @@ from collections import defaultdict
 def fit(df, class_name, columns, features_type, discrete, continuous,
         filename='yadt_dataset', path='./', sep=';', log=False):
     
-    data_filename = path + filename + '.data'
-    names_filename = path + filename + '.names'
-    tree_filename = path + filename + '.dot'
+    data_filename = path + filename + str(np.random.randint(0,10000)) + '.data'
+    names_filename = path + filename + str(np.random.randint(0,10000)) + '.names'
+    tree_filename = path + filename +  str(np.random.randint(0,10000)) + '.dot'
 
     for k, v in features_type.items():
         if v == 'integer':

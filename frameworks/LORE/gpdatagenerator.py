@@ -195,39 +195,60 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
         Xgp.append(Xsso)
     
     if size_sdo > 0.0:
-        toolbox_sdo = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_sdo,
-                                    discrete=discrete, continuous=continuous, class_name=class_name,
-                                    idx_features=idx_features, distance_function=distance_function,
-                                    population_size=size_sdo, alpha1=alpha1, alpha2=alpha2, eta=eta1, mutpb=mutpb,
-                                    tournsize=tournsize)
-        population, halloffame, logbook = fit(toolbox_sdo, population_size=size_sdo, halloffame_ratio=halloffame_ratio, 
-                                              cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+        max_tries = 10
+        Xsdo = []
+        tries = 0
 
-        Xsdo = get_oversample(population, halloffame)
+        while not Xsdo and tries < max_tries:
+            toolbox_sdo = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_sdo,
+                                        discrete=discrete, continuous=continuous, class_name=class_name,
+                                        idx_features=idx_features, distance_function=distance_function,
+                                        population_size=size_sdo, alpha1=alpha1, alpha2=alpha2, eta=eta1, mutpb=mutpb,
+                                        tournsize=tournsize)
+            population, halloffame, logbook = fit(toolbox_sdo, population_size=size_sdo, halloffame_ratio=halloffame_ratio,
+                                                  cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+
+            Xsdo = get_oversample(population, halloffame)
+            tries += 1
+
         Xgp.append(Xsdo)
 
     if size_dso > 0.0:
-        toolbox_dso = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_dso,
-                                    discrete=discrete, continuous=continuous, class_name=class_name,
-                                    idx_features=idx_features, distance_function=distance_function,
-                                    population_size=size_dso, alpha1=alpha1, alpha2=alpha2, eta=eta2, mutpb=mutpb,
-                                    tournsize=tournsize)
-        population, halloffame, logbook = fit(toolbox_dso, population_size=size_dso, halloffame_ratio=halloffame_ratio, 
-                                              cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+        max_tries = 10
+        Xdso = []
+        tries = 0
 
-        Xdso = get_oversample(population, halloffame)
+        while not Xdso and tries < max_tries:
+            toolbox_dso = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_dso,
+                                        discrete=discrete, continuous=continuous, class_name=class_name,
+                                        idx_features=idx_features, distance_function=distance_function,
+                                        population_size=size_dso, alpha1=alpha1, alpha2=alpha2, eta=eta2, mutpb=mutpb,
+                                        tournsize=tournsize)
+            population, halloffame, logbook = fit(toolbox_dso, population_size=size_dso, halloffame_ratio=halloffame_ratio,
+                                                  cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+
+            Xdso = get_oversample(population, halloffame)
+            tries += 1
+
         Xgp.append(Xdso)
 
     if size_ddo > 0.0:
-        toolbox_ddo = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_ddo,
-                                    discrete=discrete, continuous=continuous, class_name=class_name,
-                                    idx_features=idx_features, distance_function=distance_function,
-                                    population_size=size_ddo, alpha1=alpha1, alpha2=alpha2, eta=eta2, mutpb=mutpb,
-                                    tournsize=tournsize)
-        population, halloffame, logbook = fit(toolbox_ddo, population_size=size_ddo, halloffame_ratio=halloffame_ratio, 
-                                              cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+        max_tries = 10
+        Xddo = []
+        tries = 0
 
-        Xddo = get_oversample(population, halloffame)
+        while not Xddo and tries < max_tries:
+            toolbox_ddo = setup_toolbox(x, feature_values, bb, init=record_init, init_params=x, evaluate=fitness_ddo,
+                                        discrete=discrete, continuous=continuous, class_name=class_name,
+                                        idx_features=idx_features, distance_function=distance_function,
+                                        population_size=size_ddo, alpha1=alpha1, alpha2=alpha2, eta=eta2, mutpb=mutpb,
+                                        tournsize=tournsize)
+            population, halloffame, logbook = fit(toolbox_ddo, population_size=size_ddo, halloffame_ratio=halloffame_ratio,
+                                                  cxpb=cxpb, mutpb=mutpb, ngen=ngen, verbose=False)
+
+            Xddo = get_oversample(population, halloffame)
+            tries += 1
+
         Xgp.append(Xddo)
 
     Xgp = np.concatenate((Xgp), axis=0)
