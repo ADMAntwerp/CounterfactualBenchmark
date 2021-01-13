@@ -27,7 +27,7 @@ class Converter:
                 elif cat_feat_binary_ordered in oh_col:
                     self.oh_dict[cat_feat_binary_ordered] = {cat_f: 'binary'}
                 else:
-                    print('Warning - the key was not found, it will considered a binary')
+#                     print('Warning - the key was not found, it will considered a binary')
                     self.oh_dict[cat_f] = {cat_f: 'binary'}
 
         self.dict_feat_idx = {}
