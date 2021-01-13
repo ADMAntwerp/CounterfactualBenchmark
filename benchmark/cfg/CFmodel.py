@@ -19,7 +19,7 @@ except AttributeError:
 class CreateModel:
 
     def __init__(self, datasetName, xClass):
-        self.model = load_model(f'../models/{str(xClass)}_{datasetName}.h5', compile=False)
+        self.model = load_model(f'../models/{datasetName}.h5', compile=False)
 
     def predict(self, x):
         return pd.DataFrame(self.model.predict(x))[0].map(round).to_numpy()
