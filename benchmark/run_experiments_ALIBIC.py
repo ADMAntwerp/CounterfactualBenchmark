@@ -89,10 +89,10 @@ for dsName in VAR_TYPES.keys():
                             len_oh = len(df[cat_f].unique())
                             dict_oh[init_idx] = len_oh
 
-                    model_keras.add(tf.keras.layers.Dense(2, activation='softmax'))
+                    model_keras.add(tf.keras.layers.Dense(2, activation='linear'))
 
                     # Additional model layer to input a two inputs instead one binary
-                    model_keras.layers[3].set_weights([np.array([[-1,1]]),np.array([1,0])])
+                    model_keras.layers[3].set_weights([np.array([[1.0,-1.0]]),np.array([0.0,1.0])])
 
                     selected_df_train = df_train if not cat_feats else df_oh_train
 
@@ -130,10 +130,15 @@ for dsName in VAR_TYPES.keys():
                         timeRunALIBIC = [idx_cf, int(c), dsName, time.time() - start_time]
 
                         if exp_cfs.all:
+                            print(
+                                f"ORIGINAL: {model_keras.predict(np.array([converter.convert_to_oh(cf.drop(columns=['output']).iloc[idx_cf].to_numpy().tolist())]))}"
+                                f"CF: {model_keras.predict(np.array([exp_cfs.data['cf']['X'][0]]))}")
+
                             pd.DataFrame(timeRunALIBIC).T.to_csv('../cfoutput/TIME_ALIBIC.csv', mode='a', header=False,
                                                                  index=False)
                             cfs_DiCE.append(exp_cfs.data['cf']['X'][0])
                         else:
+                            print('NO CF')
                             if cat_feats:
                                 cfs_DiCE.append([np.NaN] * (df_oh.shape[1] - 1))
                             else:
