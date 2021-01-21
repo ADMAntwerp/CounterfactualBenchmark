@@ -156,7 +156,7 @@ for dsName in VAR_TYPES.keys():
                 maxFRang = np.array(maxFRang)
 
 
-                alibi_cfs = CounterFactualProto(adapted_nn,
+                alibi_cfs = CounterFactualProto(lambda x : adapted_nn.predict(x),
                                                 (1, df_oh.shape[1] - 1 if cat_feats else df.shape[1] - 1),
                                                 use_kdtree=True,
                                                 feature_range=(minFRang, maxFRang),
@@ -189,7 +189,7 @@ for dsName in VAR_TYPES.keys():
                             f"ORIGINAL: {adapted_nn.predict(np.array([cf.drop(columns=['output']).iloc[idx_cf].to_numpy().tolist()]))}"
                             f"CF: {adapted_nn.predict(np.array([exp_cfs.data['cf']['X'][0]]))}")
 
-                    pd.DataFrame(timeRunALIBIC).T.to_csv('../cfoutput/TIME_ALIBIC.csv', mode='a', header=False,
+                    pd.DataFrame(timeRunALIBIC).T.to_csv('../cfoutput/TIME_ALIBICNOGRAD.csv', mode='a', header=False,
                                                          index=False)
                     cfs_DiCE.append(exp_cfs.data['cf']['X'][0])
                 else:
@@ -201,6 +201,6 @@ for dsName in VAR_TYPES.keys():
 
                 tf.keras.backend.clear_session()
 
-            pd.DataFrame(cfs_DiCE).to_csv(f'../cfoutput/{str(int(c))}_{dsName}_ALIBIC.csv', index=False)
+            pd.DataFrame(cfs_DiCE).to_csv(f'../cfoutput/{str(int(c))}_{dsName}_ALIBICNOGRAD.csv', index=False)
 
 
