@@ -125,6 +125,7 @@ for dsName in VAR_TYPES.keys():
 
                     second_layer = [np.array(second_layer_w, dtype=np.float32),
                                     np.array(second_layer_b, dtype=np.float32)]
+                    adapted_nn.layers[2].set_weights(second_layer)
 
                 # Bin output
                 adapted_nn.layers[3].set_weights(
@@ -152,10 +153,8 @@ for dsName in VAR_TYPES.keys():
                 def scoring_function(X):
                     output = []
                     for res in adapted_nn.predict(X):
-                        if c == 0:
-                            output.append([res[0]])
-                        if c == 1:
-                            output.append([1 - res[0]])
+                        output.append([res[0]])
+
 
                     return np.array(output)
 
