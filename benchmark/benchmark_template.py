@@ -1,4 +1,5 @@
 import random as python_random
+import operator
 
 import sys
 
@@ -48,8 +49,17 @@ def _nn_ohe(input_shape, hidden_layers_ws, output_number):
     return nn
 
 
-def run_experiment(framework_name, framework_tester, output_number=1):
-    for dsName in VAR_TYPES.keys():
+VAR_TYPES_IDX = [*range(len(VAR_TYPES))]
+
+
+def run_experiment(framework_name, framework_tester, output_number=1, ds_id_test=VAR_TYPES_IDX):
+
+    # Get datasets to test from the ds_id_test list
+    datasets_to_test = operator.itemgetter(*ds_id_test)(list(VAR_TYPES.keys()))
+    if len(ds_id_test) == 1:
+        datasets_to_test = [datasets_to_test]
+
+    for dsName in datasets_to_test:
 
         # Load feature type specifications
         cat_feats = VAR_TYPES[dsName]['categorical']
