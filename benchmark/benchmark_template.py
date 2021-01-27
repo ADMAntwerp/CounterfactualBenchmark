@@ -184,11 +184,19 @@ def run_experiment(framework_name, framework_tester, output_number=1, ds_id_test
                         cf_out_oh = cf_out
 
                     if cat_feats:
-                        factual_class = adapted_nn.predict(np.array([factual_oh]))[0][1]
-                        cf_class = adapted_nn.predict(np.array([cf_out_oh]))[0][1]
+                        factual_class = adapted_nn.predict(np.array([factual_oh]))[0]
+                        cf_class = adapted_nn.predict(np.array([cf_out_oh]))[0]
                     else:
-                        factual_class = adapted_nn.predict(np.array([factual_oh]))[0][0]
-                        cf_class = adapted_nn.predict(np.array([cf_out_oh]))[0][0]
+                        factual_class = adapted_nn.predict(np.array([factual_oh]))[0]
+                        cf_class = adapted_nn.predict(np.array([cf_out_oh]))[0]
+
+                    if output_number == 2:
+                        if cat_feats:
+                            factual_class = factual_class[1]
+                            cf_class = cf_class[1]
+                        else:
+                            factual_class = factual_class[0]
+                            cf_class = cf_class[0]
 
                     # Check if the factual class is indeed 0, if not, it's a internal problem that must be reported
                     try:
