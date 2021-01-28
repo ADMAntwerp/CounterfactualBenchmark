@@ -209,7 +209,7 @@ def run_experiment(framework_name, framework_tester, output_number=1, ds_id_test
                     else:
                         print(f'Failed counterfactual!\nFactual class:{factual_class}\nCF class:{cf_class}\n')
 
-                    cfs_framework.append(cf_class)
+                    cfs_framework.append(cf_out_oh)
                 else:
                     print(f'No returned counterfactual candidate!\n')
                     cfs_framework.append([np.NaN] * (len(factual_oh)))
