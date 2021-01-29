@@ -34,11 +34,14 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
                         Conversion one-hot encoded -> non-encoded: converter.convert(INPUT_DATA_OH_DATA).
                         * INPUT_DATA_NON_ENCODED and INPUT_DATA_OH_DATA must be simple lists
                         * INPUT_DATA_NON_ENCODED and INPUT_DATA_OH_DATA must follow the same column structure as df_train or df_oh_train
+                        -> PROPERTY: converter.binary_cats - Binary's features column names
     :param adapted_nn: TensorFlow/Keras neural network.
                         Neural network weights can be accessed by using: adapted_nn.get_weights(), for more info
                         please, refer to TensorFlow/Keras documentation
+    :param df_factual: Dataset with the factual rows to be tested
     :param factual: A simple list of the factual result to be tested
     :param factual_oh: Same as factual but one-hot encoded, IF THERE'S NO CATEGORICAL FEATURES IT'S THE SAME AS factual
+    :param session: TensorFlow current session
 
     :return: 2 outputs:
         (list) - A simple list with the counterfactual result. It can be one-hot encoded or not.
