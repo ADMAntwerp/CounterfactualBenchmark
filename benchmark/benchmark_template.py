@@ -2,8 +2,15 @@ import random as python_random
 import operator
 import os
 
-import sys
+verbose = os.getenv('VERBOSE')
 
+if verbose == '0':
+    import logging
+    logging.getLogger("tensorflow").setLevel(logging.ERROR)
+
+import sys
+if verbose == '0':
+    sys.stdout = open(os.devnull, 'w')
 sys.path.append('../')
 
 import tensorflow as tf
