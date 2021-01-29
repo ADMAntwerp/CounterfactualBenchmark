@@ -108,7 +108,7 @@ class Cadex:
                 mask = mask * change_mask
 
         # Initialize the Adam optimizer, giving it the calculated input mask
-        adam = MaskedAdam(K.constant(mask, dtype='float64'))
+        adam = MaskedAdam(K.constant(mask, dtype='float32'))
 
         self.model.compile(optimizer=adam, loss='categorical_crossentropy', metrics=['accuracy'])
 
