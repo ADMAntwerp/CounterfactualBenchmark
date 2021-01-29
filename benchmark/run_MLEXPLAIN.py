@@ -1,3 +1,5 @@
+import argparse
+
 import time
 
 from benchmark_template import run_experiment
@@ -15,7 +17,7 @@ output_number = 2  # The number of neural network outputs
 
 
 def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_feats, converter, adapted_nn,
-                     factual, factual_oh):
+                     df_factual, factual, factual_oh, session):
     """ Function used to benchmark counterfactual explanation generation algorithms. It includes most data one generator
     may use, although it's not needed to use all them. Please, report if you think any additional data should be
     provided. This function output must be a simple list with the counterfactual result and the time used to generate
@@ -92,4 +94,12 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
     return cf, time_cf_generation
 
 
-run_experiment(framework_name, framework_tester, output_number)
+parser = argparse.ArgumentParser()
+parser.add_argument("d")
+args = parser.parse_args()
+
+if __name__ == "__main__":
+    if args.d:
+        run_experiment(framework_name, framework_tester, output_number, [int(args.d)])
+    else:
+        run_experiment(framework_name, framework_tester, output_number)
