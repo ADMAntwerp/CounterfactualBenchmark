@@ -63,7 +63,7 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
         for c_feat in list(set(cat_feats) - set(bin_feats)):
             dict_conversion = {}
             for idx_cat_key, key_ordered_n in enumerate(converter.dict_feat_idx[c_feat].keys()):
-                if df_input[c_feat].dtype == np.int64:
+                if df_input[c_feat].dtype == np.int64 or df_input[c_feat].dtype == float:
                     dict_conversion[int(float(key_ordered_n))] = idx_cat_key + 1
                 else:
                     dict_conversion[key_ordered_n] = idx_cat_key + 1
