@@ -11,7 +11,7 @@ sys.path.append('../frameworks/alibi/')
 
 from alibi.explainers.cfproto import CounterFactualProto
 
-framework_name = 'ALIBIC'
+framework_name = 'ALIBICNOGRAD'
 output_number = 2  # The number of neural network outputs
 
 
