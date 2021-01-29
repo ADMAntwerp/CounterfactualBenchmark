@@ -11,7 +11,7 @@ def first_ennemy(X, observation, prediction_function, n_ennemies=1):
     idxes = sorted(enumerate(D), key=lambda x:x[1])
     enn = []
     k = 0
-    while len(enn) < n_ennemies:
+    while len(enn) < n_ennemies and k < len(idxes):
         i = idxes[k]
         if (prediction_function(X[i[0]]) >= 0.5) != (prediction_function(observation) >=0.5):
             enn.append(X[i[0]])
