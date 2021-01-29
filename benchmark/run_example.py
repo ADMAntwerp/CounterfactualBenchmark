@@ -1,3 +1,5 @@
+import argparse
+
 import time
 
 from benchmark_template import run_experiment
@@ -7,7 +9,7 @@ output_number = 1  # The number of neural network outputs
 
 
 def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_feats, converter, adapted_nn,
-                     factual, factual_oh):
+                     df_factual, factual, factual_oh, session):
     """ Function used to benchmark counterfactual explanation generation algorithms. It includes most data one generator
     may use, although it's not needed to use all them. Please, report if you think any additional data should be
     provided. This function output must be a simple list with the counterfactual result and the time used to generate
@@ -24,11 +26,14 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
                         Conversion one-hot encoded -> non-encoded: converter.convert(INPUT_DATA_OH_DATA).
                         * INPUT_DATA_NON_ENCODED and INPUT_DATA_OH_DATA must be simple lists
                         * INPUT_DATA_NON_ENCODED and INPUT_DATA_OH_DATA must follow the same column structure as df_train or df_oh_train
+                        -> PROPERTY: converter.binary_cats - Binary's features column names
     :param adapted_nn: TensorFlow/Keras neural network.
                         Neural network weights can be accessed by using: adapted_nn.get_weights(), for more info
                         please, refer to TensorFlow/Keras documentation
+    :param df_factual: Dataset with the factual rows to be tested
     :param factual: A simple list of the factual result to be tested
     :param factual_oh: Same as factual but one-hot encoded, IF THERE'S NO CATEGORICAL FEATURES IT'S THE SAME AS factual
+    :param session: TensorFlow current session
 
     :return: 2 outputs:
         (list) - A simple list with the counterfactual result. It can be one-hot encoded or not.
@@ -57,4 +62,12 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
     return cf, time_cf_generation
 
 
-run_experiment(framework_name, framework_tester, output_number)
+parser = argparse.ArgumentParser()
+parser.add_argument("d")
+args = parser.parse_args()
+
+if __name__ == "__main__":
+    if args.d:
+        run_experiment(framework_name, framework_tester, output_number, [int(args.d)])
+    else:
+        run_experiment(framework_name, framework_tester, output_number)
