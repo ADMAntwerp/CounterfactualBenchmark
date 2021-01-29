@@ -51,14 +51,16 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
     # First you must configure your generator, this may be fit with training data or process neural network parameters
     # or even convert data or the model. These procedures are those needed before the cf generation and generally just
     # done one time.
-    cat_idxs = []
+    cat_idxs = {}
     for f_idx, c in enumerate(list(df_oh_train.drop(columns=['output']).columns)):
         c_idx = int(float(c.split('_')[0]))
 
-        if len(cat_idxs) == c_idx:
-            cat_idxs.append([])
+        if c_idx not in cat_idxs.keys():
+            cat_idxs[c_idx] = []
 
         cat_idxs[c_idx].append(f_idx)
+
+    cat_idxs = cat_idxs.values()
 
     cfg = Cadex(adapted_nn, categorical_attributes=cat_idxs if cat_feats else None)
 
@@ -85,8 +87,6 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
 
     # Then, return the generated counterfactual (in the right format) and the time taken to generate it
     return cf, time_cf_generation
-
-
 
 
 parser = argparse.ArgumentParser()
