@@ -177,7 +177,7 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
     Xgp = list()
     
     if size_sso > 0.0:
-        max_tries = 10
+        max_tries = 40
         Xsso = []
         tries = 0
 
@@ -195,7 +195,7 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
         Xgp.append(Xsso)
     
     if size_sdo > 0.0:
-        max_tries = 10
+        max_tries = 40
         Xsdo = []
         tries = 0
 
@@ -214,7 +214,7 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
         Xgp.append(Xsdo)
 
     if size_dso > 0.0:
-        max_tries = 10
+        max_tries = 40
         Xdso = []
         tries = 0
 
@@ -233,7 +233,7 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
         Xgp.append(Xdso)
 
     if size_ddo > 0.0:
-        max_tries = 10
+        max_tries = 40
         Xddo = []
         tries = 0
 
@@ -251,12 +251,15 @@ def generate_data(x, feature_values, bb, discrete, continuous, class_name, idx_f
 
         Xgp.append(Xddo)
 
-    Xgp = np.concatenate((Xgp), axis=0)
+    if len(Xgp[0]) > 0 and len(Xgp[1]) > 0:
+        Xgp = np.concatenate((Xgp), axis=0)
 
-    if return_logbook:
-        return Xgp, logbook
+        if return_logbook:
+            return Xgp, logbook
 
-    return Xgp
+        return Xgp
+    else:
+        return []
 
 
 def calculate_feature_values(X, columns, class_name, discrete, continuous, size=1000,

@@ -29,8 +29,7 @@ def explain(record2explain, X2E, dataset, blackbox,
     # Generate Neighborhood
     dfZ, Z = ng_function(dfZ, x, blackbox, dataset)
 
-    # Needed because neighbourhood generation fails sometimes
-    if len(Z) > 0:
+    if len(dfZ) > 0:
         # Needed because in some situations it can only generate one class data on dfZ
         if len(dfZ['output'].unique()) < 2:
             explanation = []
@@ -85,10 +84,10 @@ def explain(record2explain, X2E, dataset, blackbox,
 
         if returns_infos:
             return explanation, infos
+
+        return explanation
     else:
         return [], []
-
-    return explanation
 
 
 def is_satisfied(x, rule, discrete, features_type):

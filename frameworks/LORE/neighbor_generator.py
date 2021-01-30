@@ -45,7 +45,8 @@ def genetic_neighborhood(dfZ, x, blackbox, dataset):
     Z = generate_data(x, feature_values, blackbox, discrete_no_class, continuous, class_name, idx_features,
                       distance_function, neigtype={'ss': 0.5, 'sd': 0.5}, population_size=1000, halloffame_ratio=0.1,
                       alpha1=0.5, alpha2=0.5, eta1=1.0, eta2=0.0,  tournsize=3, cxpb=0.5, mutpb=0.2, ngen=10)
-    if Z:
+
+    if len(Z) > 0:
         zy = blackbox.predict(Z)
         # print(np.unique(zy, return_counts=True))
         if len(np.unique(zy)) == 1:
@@ -61,7 +62,9 @@ def genetic_neighborhood(dfZ, x, blackbox, dataset):
         dfZ = build_df2explain(blackbox, Z, dataset)
         return dfZ, Z
     else:
+        print('Could not generate data')
         return [], []
+
 
 
 def real_data(dfZ, x, blackbox, dataset):
