@@ -35,9 +35,11 @@ def fit(df, class_name, columns, features_type, discrete, continuous,
 
     # cmd = 'yadt/dTcmd -fd %s -fm %s -sep %s -d %s' % (
     #     data_filename, names_filename, sep, tree_filename)
-    cmd = '..\\frameworks\\LORE\\yadt\\dTcmd -fd %s -fm %s -sep %s -d %s' % (
-        data_filename, names_filename, sep, tree_filename)
-    output = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT, shell=True)
+    # cmd = '..\\frameworks\\LORE\\yadt\\dTcmd -fd %s -fm %s -sep %s -d %s' % (  # WINDOWS VERSION
+    #     data_filename, names_filename, sep, tree_filename) # WINDOWS VERSION
+    cmd = "wine dTcmd -fd %s -fm %s -sep '%s' -d %s" % (data_filename, names_filename, sep, tree_filename)
+    # output = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT, shell=True) # WINDOWS VERSION
+    output = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
     # cmd = r"dTcmd -fd %s -fm %s -sep '%s' -d %s" % (
     #     data_filename, names_filename, sep, tree_filename)
     # cmd = r'noah "%s"' % cmd
