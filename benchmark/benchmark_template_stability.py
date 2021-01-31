@@ -104,8 +104,8 @@ def run_experiment(framework_name, framework_tester, output_number=1, ds_id_test
                 df_last_cf = pd.read_csv(f"../cfoutput/{str(int(c))}_{dsName}_{framework_name}.csv")
                 # Get only the lines that generated cf
                 df_last_cf = df_last_cf.dropna()
-                # Get 2 index
-                idx_to_test = df_last_cf.sample(10, random_state=42).index.to_list()
+                # Get up to 10 index
+                idx_to_test = df_last_cf.sample(10 if df_last_cf.shape[0] >= 10 else df_last_cf.shape[0], random_state=42).index.to_list()
 
                 # Save verified indexes
                 with open(f'../cfoutput/STABILITY_TEST_IDX_{str(int(c))}_{dsName}_{framework_name}.txt', 'w') as f:
