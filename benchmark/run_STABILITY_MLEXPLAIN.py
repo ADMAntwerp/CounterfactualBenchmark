@@ -2,7 +2,7 @@ import argparse
 
 import time
 
-from benchmark_template import run_experiment
+from benchmark_template_stability import run_experiment
 
 import torch
 import torch.nn as nn

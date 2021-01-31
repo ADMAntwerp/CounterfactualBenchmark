@@ -96,13 +96,12 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
     return cf, time_cf_generation
 
 
-run_experiment(framework_name, framework_tester, output_number, [0])
-# parser = argparse.ArgumentParser()
-# parser.add_argument("d")
-# args = parser.parse_args()
-#
-# if __name__ == "__main__":
-#     if args.d:
-#         run_experiment(framework_name, framework_tester, output_number, [int(args.d)])
-#     else:
-#         run_experiment(framework_name, framework_tester, output_number)
+parser = argparse.ArgumentParser()
+parser.add_argument("d")
+args = parser.parse_args()
+
+if __name__ == "__main__":
+    if args.d:
+        run_experiment(framework_name, framework_tester, output_number, [int(args.d)])
+    else:
+        run_experiment(framework_name, framework_tester, output_number)

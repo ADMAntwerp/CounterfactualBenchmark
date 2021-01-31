@@ -2,7 +2,7 @@ import argparse
 
 import time
 
-from benchmark_template import run_experiment
+from benchmark_template_stability import run_experiment
 
 import sys
 sys.path.append('../frameworks/synth-action-seq/')
