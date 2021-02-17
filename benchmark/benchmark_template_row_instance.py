@@ -183,7 +183,7 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
             # Measure time to get CF only if we get a cf
             if len(cf_out) > 0:
                 timeRunFramework = [idx_cf, int(c), dsName, cf_time]
-                pd.DataFrame(timeRunFramework).T.to_csv(f'../cfoutput/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
+                pd.DataFrame(timeRunFramework).T.to_csv(f'../results/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
                                                         header=False, index=False)
 
             # Append result to result array and verify if it's a counterfactual
@@ -225,4 +225,4 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
                 print(f'No returned counterfactual candidate!\n')
                 cfs_framework.append([np.NaN] * (len(factual_oh)))
 
-            pd.DataFrame(cfs_framework).to_csv(f'../cfoutput/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)
+            pd.DataFrame(cfs_framework).to_csv(f'../results/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)
