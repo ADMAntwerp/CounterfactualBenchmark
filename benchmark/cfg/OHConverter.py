@@ -88,6 +88,3 @@ class Converter:
             output.append(out_row)
 
         return output
-
-
-
