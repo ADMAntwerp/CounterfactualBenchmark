@@ -2,14 +2,14 @@ import argparse
 
 import time
 
-from benchmark_template import run_experiment
+from benchmark_template_row_instance import run_experiment
 
 import pandas as pd
 
 import sys
 sys.path.append('../frameworks/LORE/')
 
-from benchmark_template_row_instance import run_experiment
+from frameworks.LORE import test_lore
 
 framework_name = 'LORE'
 output_number = 1  # The number of neural network outputs
