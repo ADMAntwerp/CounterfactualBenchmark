@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source ~/anaconda3/etc/profile.d/conda.sh
+conda init bash&&
+
 # Initial Setup with required Software
 echo "Initializing installations"
 if [ $(id -u) -eq 0 ]; then
@@ -15,37 +18,31 @@ fi
 # Create All Conda Environments Needed
 echo "Creating conda environments"
 conda create --name ALIBIC python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate ALIBIC &&
 pip install -r ../framework_requirements/alibic_requirements.txt &&
 
 conda create --name CADEX python=3.6 -y &&
-conda init bash&&
 sleep 10
 conda activate CADEX &&
 pip install -r ../framework_requirements/cadex_requirements.txt &&
 
 conda create --name DICE python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate DICE &&
 pip install -r ../framework_requirements/dice_requirements.txt &&
 
 conda create --name GROWINGSPHERES python=3.6 -y &&
-conda init bash&&
 sleep 10
 conda activate GROWINGSPHERES &&
 pip install -r ../framework_requirements/growingspheres_requirements.txt &&
 
 conda create --name LORE python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate LORE &&
 pip install -r ../framework_requirements/lore_requirements.txt &&
 
 conda create --name MACE python=3.6 -y &&
-conda init bash&&
 sleep 10
 conda activate MACE &&
 pip install -r ../framework_requirements/mace_requirements.txt &&
@@ -53,19 +50,16 @@ pysmt-install --z3 --confirm-agreement &&
 
 
 conda create --name MLEXPLAIN python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate MLEXPLAIN &&
 pip install -r ../framework_requirements/mlexplain_requirements.txt &&
 
 conda create --name SEDC python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate SEDC &&
 pip install -r ../framework_requirements/sedc_requirements.txt &&
 
 conda create --name SYNAS python=3.7 -y &&
-conda init bash&&
 sleep 10
 conda activate SYNAS &&
 pip install -r ../framework_requirements/synas_requirements.txt &&
