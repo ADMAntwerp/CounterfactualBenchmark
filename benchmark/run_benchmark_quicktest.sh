@@ -48,8 +48,9 @@ conda create --name MACE python=3.6 -y &&
 conda init bash&&
 sleep 10
 conda activate MACE &&
-pysmt-install --z3 --confirm-agreement &&
 pip install -r ../framework_requirements/mace_requirements.txt &&
+pysmt-install --z3 --confirm-agreement &&
+
 
 conda create --name MLEXPLAIN python=3.7 -y &&
 conda init bash&&
