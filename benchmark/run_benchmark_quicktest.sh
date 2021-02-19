@@ -311,4 +311,4 @@ run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
 run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1
