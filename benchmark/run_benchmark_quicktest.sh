@@ -90,19 +90,19 @@ run_experiments_dataset () {
   touch ./log_bench/$3_$9.log;
   for DSIDX in $(seq $1 $2)
   do
-    sh run_shell.sh $3 $4 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $4 $5 $DSIDX &
   done;
   for DSIDX in $(seq $1 $2)
   do
-    sh run_shell.sh $3 $7 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $7 $5 $DSIDX &
   done;
   for DSIDX in $(seq $1 $2)
   do
-    sh run_shell.sh $3 $8 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $8 $5 $DSIDX &
   done;
   for DSIDX in $(seq $1 $2)
   do
-    sh run_shell.sh $3 $9 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $9 $5 $DSIDX &
   done;
   init_exp_date=$(date +%s)
   partial_exp_date=$(date +%s)
@@ -131,184 +131,184 @@ bench_algorithm=benchmark_SYNAS.py
 
 conda activate SYNAS &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # SEDC RUN
 bench_algorithm=benchmark_SEDC.py
 
 conda activate SEDC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # MLEXPLAIN RUN
 bench_algorithm=benchmark_MLEXPLAIN.py
 
 conda activate MLEXPLAIN &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # MACE RUN
 bench_algorithm=benchmark_MACE.py
 
 conda activate MACE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # LORE RUN
 bench_algorithm=benchmark_LORE.py
 
 conda activate LORE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # GROWINGSPHERES3 RUN
 bench_algorithm=benchmark_GROWINGSPHERES3.py
 
 conda activate GROWINGSPHERES &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # GROWINGSPHERES4 RUN
 bench_algorithm=benchmark_GROWINGSPHERES4.py
 
 conda activate GROWINGSPHERES &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # DICE RUN
 bench_algorithm=benchmark_DiCE.py
 
 conda activate DICE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # CADEX RUN
 bench_algorithm=benchmark_CADEX.py
 
 conda activate CADEX &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # ALIBICNOGRAD RUN
 bench_algorithm=benchmark_ALIBICNOGRAD.py
 
 conda activate ALIBIC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
 
 # ALIBIC RUN
 bench_algorithm=benchmark_ALIBIC.py
 
 conda activate ALIBIC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 300 1 2 3 &&
+run_experiments_dataset 0 1 $bench_algorithm 0 0 900 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 300 5 6 7 &&
+run_experiments_dataset 0 1 $bench_algorithm 4 0 900 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 300 9 10 11 &&
+run_experiments_dataset 0 1 $bench_algorithm 8 0 900 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 300 13 14 15 &&
+run_experiments_dataset 0 1 $bench_algorithm 12 0 900 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 300 17 18 19 &&
+run_experiments_dataset 0 1 $bench_algorithm 16 0 900 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 300 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 900 21 0 1 &&
