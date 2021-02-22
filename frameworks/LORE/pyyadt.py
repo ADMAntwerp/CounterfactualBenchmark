@@ -1,5 +1,7 @@
 import os
 import re
+import time
+import hashlib
 import pydotplus
 import subprocess
 
@@ -14,10 +16,13 @@ from collections import defaultdict
 
 def fit(df, class_name, columns, features_type, discrete, continuous,
         filename='yadt_dataset', path='./', sep=';', log=False):
+
+    m = hashlib.md5()
+    m.update(b"%.20f" % time.time())
     
-    data_filename = path + filename + str(np.random.randint(0,10000)) + '.data'
-    names_filename = path + filename + str(np.random.randint(0,10000)) + '.names'
-    tree_filename = path + filename +  str(np.random.randint(0,10000)) + '.dot'
+    data_filename = path + filename + str(m.hexdigest()) + '.data'
+    names_filename = path + filename + str(m.hexdigest()) + '.names'
+    tree_filename = path + filename + str(m.hexdigest()) + '.dot'
 
     for k, v in features_type.items():
         if v == 'integer':
@@ -54,10 +59,10 @@ def fit(df, class_name, columns, features_type, discrete, continuous,
     
     if os.path.exists(data_filename):
         os.remove(data_filename)
-        
+
     if os.path.exists(names_filename):
         os.remove(names_filename)
-        
+
     if os.path.exists(tree_filename):
         os.remove(tree_filename)
         
