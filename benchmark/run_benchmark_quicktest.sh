@@ -114,7 +114,7 @@ run_experiments_dataset () {
     total_lines_ds3=$(wc -l < ./log_bench/$3_$8.log)
     total_lines_ds4=$(wc -l < ./log_bench/$3_$9.log)
     total_lines=$(( $total_lines_ds1 + $total_lines_ds2 + $total_lines_ds3 + $total_lines_ds4 ))
-    if [ $total_lines -eq 8 ]; then
+    if [ $total_lines -eq 12 ]; then
       partial_exp_date=$(( $init_exp_date + $6 ));
     else
       partial_exp_date=$(date +%s);
