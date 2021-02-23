@@ -1,5 +1,5 @@
 init_date=$(date +%s)
-if ! timeout 900 python $1 $2 $3 $4 ; then
+if ! timeout 2400 python $1 $2 $3 $4 ; then
   final_date=$(date +%s)
   total_time=$((final_date-init_date))
   echo 'PROCESS TOOK' $total_time 'SECONDS' 'ERROR in '$2 $3 $4
