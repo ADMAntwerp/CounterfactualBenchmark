@@ -141,7 +141,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # SEDC RUN
 bench_algorithm=benchmark_SEDC.py
@@ -158,7 +158,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # MLEXPLAIN RUN
 bench_algorithm=benchmark_MLEXPLAIN.py
@@ -175,7 +175,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # MACE RUN
 bench_algorithm=benchmark_MACE.py
@@ -192,7 +192,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # LORE RUN
 bench_algorithm=benchmark_LORE.py
@@ -209,7 +209,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # GROWINGSPHERES3 RUN
 bench_algorithm=benchmark_GROWINGSPHERES3.py
@@ -226,7 +226,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # GROWINGSPHERES4 RUN
 bench_algorithm=benchmark_GROWINGSPHERES4.py
@@ -243,7 +243,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # DICE RUN
 bench_algorithm=benchmark_DiCE.py
@@ -260,7 +260,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # CADEX RUN
 bench_algorithm=benchmark_CADEX.py
@@ -277,7 +277,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # ALIBICNOGRAD RUN
 bench_algorithm=benchmark_ALIBICNOGRAD.py
@@ -294,7 +294,7 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1 &&
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
 
 # ALIBIC RUN
 bench_algorithm=benchmark_ALIBIC.py
@@ -311,4 +311,4 @@ run_experiments_dataset 0 2 $bench_algorithm 12 0 2400 13 14 15 &&
 
 run_experiments_dataset 0 2 $bench_algorithm 16 0 2400 17 18 19 &&
 
-run_experiments_dataset 0 2 $bench_algorithm 20 0 2400 21 0 1
+run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1
