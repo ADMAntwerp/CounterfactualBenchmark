@@ -66,7 +66,7 @@ pip install -r ../framework_requirements/synas_requirements.txt &&
 
 # Run all class 0 Datasets
 # BalanceScale Class 0
-# 1 - Initial row number
+# 1 - Results folder
 # 2 - Final row number
 # 3 - Framework run algorithm
 # 4 - Dataset 1
@@ -76,43 +76,48 @@ pip install -r ../framework_requirements/synas_requirements.txt &&
 # 8 - Dataset 3
 # 9 - Dataset 4
 run_experiments_dataset () {
-  touch ./log_bench/$3_$4.log;
-  rm ./log_bench/$3_$4.log;
-  touch ./log_bench/$3_$4.log;
-  touch ./log_bench/$3_$7.log;
-  rm ./log_bench/$3_$7.log;
-  touch ./log_bench/$3_$7.log;
-  touch ./log_bench/$3_$8.log;
-  rm ./log_bench/$3_$8.log;
-  touch ./log_bench/$3_$8.log;
-  touch ./log_bench/$3_$9.log;
-  rm ./log_bench/$3_$9.log;
-  touch ./log_bench/$3_$9.log;
-  for DSIDX in $(seq $1 $2)
+
+  LOG_FOLDER=./log_bench/$1
+
+  mkdir -p $LOG_FOLDER
+
+  touch $LOG_FOLDER/$3_$4_$5.log;
+  rm $LOG_FOLDER/$3_$4_$5.log;
+  touch $LOG_FOLDER/$3_$4_$5.log;
+  touch $LOG_FOLDER/$3_$7_$5.log;
+  rm $LOG_FOLDER/$3_$7_$5.log;
+  touch $LOG_FOLDER/$3_$7_$5.log;
+  touch $LOG_FOLDER/$3_$8_$5.log;
+  rm $LOG_FOLDER/$3_$8_$5.log;
+  touch $LOG_FOLDER/$3_$8_$5.log;
+  touch $LOG_FOLDER/$3_$9_$5.log;
+  rm $LOG_FOLDER/$3_$9_$5.log;
+  touch $LOG_FOLDER/$3_$9_$5.log;
+  for DSIDX in $(seq 0 $2)
   do
-    sh run_shell_quicktest.sh $3 $4 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $4 $5 $DSIDX $1 $LOG_FOLDER &
   done;
-  for DSIDX in $(seq $1 $2)
+  for DSIDX in $(seq 0 $2)
   do
-    sh run_shell_quicktest.sh $3 $7 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $7 $5 $DSIDX $1 $LOG_FOLDER &
   done;
-  for DSIDX in $(seq $1 $2)
+  for DSIDX in $(seq 0 $2)
   do
-    sh run_shell_quicktest.sh $3 $8 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $8 $5 $DSIDX $1 $LOG_FOLDER &
   done;
-  for DSIDX in $(seq $1 $2)
+  for DSIDX in $(seq 0 $2)
   do
-    sh run_shell_quicktest.sh $3 $9 $5 $DSIDX &
+    sh run_shell_quicktest.sh $3 $9 $5 $DSIDX $1 $LOG_FOLDER &
   done;
   init_exp_date=$(date +%s)
   partial_exp_date=$(date +%s)
 
   while [ $(( $partial_exp_date - $init_exp_date )) -lt $6 ]
   do
-    total_lines_ds1=$(wc -l < ./log_bench/$3_$4.log)
-    total_lines_ds2=$(wc -l < ./log_bench/$3_$7.log)
-    total_lines_ds3=$(wc -l < ./log_bench/$3_$8.log)
-    total_lines_ds4=$(wc -l < ./log_bench/$3_$9.log)
+    total_lines_ds1=$(wc -l < $LOG_FOLDER/$3_$4_$5.log)
+    total_lines_ds2=$(wc -l < $LOG_FOLDER/$3_$7_$5.log)
+    total_lines_ds3=$(wc -l < $LOG_FOLDER/$3_$8_$5.log)
+    total_lines_ds4=$(wc -l < $LOG_FOLDER/$3_$9_$5.log)
     total_lines=$(( $total_lines_ds1 + $total_lines_ds2 + $total_lines_ds3 + $total_lines_ds4 ))
     if [ $total_lines -eq 8 ]; then
       partial_exp_date=$(( $init_exp_date + $6 ));
@@ -130,185 +135,202 @@ run_experiments_dataset () {
 bench_algorithm=benchmark_SYNAS.py
 
 conda activate SYNAS &&
+for EXPERIMENT in 0 1 2
+do
+  if [ $EXPERIMENT -eq 0 ]; then
+    RESULT_FOLDER=results
+    CAT=0
+  fi
+  if [ $EXPERIMENT -eq 1 ]; then
+    RESULT_FOLDER=results
+    CAT=1
+  fi
+  if [ $EXPERIMENT -eq 2 ]; then
+    RESULT_FOLDER=replication
+    CAT=0
+  fi
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-# SEDC RUN
-bench_algorithm=benchmark_SEDC.py
 
-conda activate SEDC &&
+  # SEDC RUN
+  bench_algorithm=benchmark_SEDC.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate SEDC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# MLEXPLAIN RUN
-bench_algorithm=benchmark_MLEXPLAIN.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate MLEXPLAIN &&
+  # MLEXPLAIN RUN
+  bench_algorithm=benchmark_MLEXPLAIN.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate MLEXPLAIN &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# MACE RUN
-bench_algorithm=benchmark_MACE.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate MACE &&
+  # MACE RUN
+  bench_algorithm=benchmark_MACE.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate MACE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# LORE RUN
-bench_algorithm=benchmark_LORE.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate LORE &&
+  # LORE RUN
+  bench_algorithm=benchmark_LORE.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate LORE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# GROWINGSPHERES3 RUN
-bench_algorithm=benchmark_GROWINGSPHERES3.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate GROWINGSPHERES &&
+  # GROWINGSPHERES3 RUN
+  bench_algorithm=benchmark_GROWINGSPHERES3.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate GROWINGSPHERES &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# GROWINGSPHERES4 RUN
-bench_algorithm=benchmark_GROWINGSPHERES4.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate GROWINGSPHERES &&
+  # GROWINGSPHERES4 RUN
+  bench_algorithm=benchmark_GROWINGSPHERES4.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate GROWINGSPHERES &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# DICE RUN
-bench_algorithm=benchmark_DiCE.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate DICE &&
+  # DICE RUN
+  bench_algorithm=benchmark_DiCE.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate DICE &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# CADEX RUN
-bench_algorithm=benchmark_CADEX.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate CADEX &&
+  # CADEX RUN
+  bench_algorithm=benchmark_CADEX.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate CADEX &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# ALIBICNOGRAD RUN
-bench_algorithm=benchmark_ALIBICNOGRAD.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate ALIBIC &&
+  # ALIBICNOGRAD RUN
+  bench_algorithm=benchmark_ALIBICNOGRAD.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate ALIBIC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
 
-# ALIBIC RUN
-bench_algorithm=benchmark_ALIBIC.py
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1 &&
 
-conda activate ALIBIC &&
+  # ALIBIC RUN
+  bench_algorithm=benchmark_ALIBIC.py
 
-run_experiments_dataset 0 1 $bench_algorithm 0 0 2400 1 2 3 &&
+  conda activate ALIBIC &&
 
-run_experiments_dataset 0 1 $bench_algorithm 4 0 2400 5 6 7 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 8 0 2400 9 10 11 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 4 $CAT 2400 5 6 7 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 12 0 2400 13 14 15 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 8 $CAT 2400 9 10 11 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 16 0 2400 17 18 19 &&
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 12 $CAT 2400 13 14 15 &&
 
-run_experiments_dataset 0 1 $bench_algorithm 20 0 2400 21 0 1
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 16 $CAT 2400 17 18 19 &&
+
+  run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 20 $CAT 2400 21 0 1
+
+done

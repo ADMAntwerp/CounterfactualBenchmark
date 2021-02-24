@@ -66,7 +66,7 @@ def _nn_ohe(input_shape, hidden_layers_ws, output_number):
 VAR_TYPES_IDX = [*range(len(VAR_TYPES))]
 
 
-def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1, ds_id_test=VAR_TYPES_IDX):
+def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1, ds_id_test=VAR_TYPES_IDX, folder_name='results'):
 
     # Get datasets to test from the ds_id_test list
     datasets_to_test = operator.itemgetter(*ds_id_test)(list(VAR_TYPES.keys()))
@@ -183,7 +183,7 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
             # Measure time to get CF only if we get a cf
             if len(cf_out) > 0:
                 timeRunFramework = [idx_cf, int(c), dsName, cf_time]
-                pd.DataFrame(timeRunFramework).T.to_csv(f'../results/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
+                pd.DataFrame(timeRunFramework).T.to_csv(f'../{folder_name}/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
                                                         header=False, index=False)
 
             # Append result to result array and verify if it's a counterfactual
@@ -225,4 +225,4 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
                 print(f'No returned counterfactual candidate!\n')
                 cfs_framework.append([np.NaN] * (len(factual_oh)))
 
-            pd.DataFrame(cfs_framework).to_csv(f'../results/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)
+            pd.DataFrame(cfs_framework).to_csv(f'../{folder_name}/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)

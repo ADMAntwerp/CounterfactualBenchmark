@@ -95,10 +95,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument("d")
 parser.add_argument("c")
 parser.add_argument("i")
+parser.add_argument("f")
 args = parser.parse_args()
 
 if __name__ == "__main__":
     if args.d:
-        run_experiment(framework_name, framework_tester, int(args.c), int(args.i), output_number, [int(args.d)])
+        run_experiment(framework_name, framework_tester, int(args.c), int(args.i), output_number, [int(args.d)], str(args.f))
     else:
         run_experiment(framework_name, framework_tester, int(args.c), int(args.i), output_number)
