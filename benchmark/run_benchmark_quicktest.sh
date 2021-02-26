@@ -131,9 +131,6 @@ run_experiments_dataset () {
 
 } &&
 
-# SYNAS RUN
-bench_algorithm=benchmark_SYNAS.py
-
 conda activate SYNAS &&
 for EXPERIMENT in 0 1 2
 do
@@ -149,6 +146,9 @@ do
     RESULT_FOLDER=replication
     CAT=0
   fi
+
+  # SYNAS RUN
+  bench_algorithm=benchmark_SYNAS.py
 
   run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
