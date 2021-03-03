@@ -43,6 +43,12 @@ for dsName in VAR_TYPES.keys():
     if len(df_oh) > 0:
         df_oh_train = df_oh.loc[idxs_train['index'].to_list()].copy()
 
+    # load validation data Indexes
+    idxs_validation = pd.read_csv(f'../idxsvalidation/{dsName}.csv')
+    df_validation = df.loc[idxs_validation['index'].to_list()].copy()
+    if len(df_oh) > 0:
+        df_oh_validation = df_oh.loc[idxs_validation['index'].to_list()].copy()
+
     # load test data Indexes
     idxs_test = pd.read_csv(f'../idxstest/{dsName}.csv')
     df_test = df.loc[idxs_test['index'].to_list()].copy()
@@ -61,47 +67,51 @@ for dsName in VAR_TYPES.keys():
         df_model = df
         df_model_test = df_test
 
-    test_pred = model.predict(df_model_test.drop(columns=['output']))
-    test_pred = np.apply_along_axis(np.argmax, 1, test_pred)
-
-    full_pred = model.predict(df_model.drop(columns=['output']))
-    full_pred = np.apply_along_axis(np.argmax, 1, full_pred)
-
-    # For the 0 class
-    test_cf_set = df_test[(df_test['output'] == test_pred) & (df_test['output'] == 0)]
-    total_cf_set = df[(df['output'] == full_pred) & (df['output'] == 0)]
-
-    if test_cf_set.shape[0] >= 100:
-        df_cf_0 = test_cf_set.sample(100, random_state=42).copy()
-    else:
-        matches = total_cf_set
-        if matches.shape[0] > 0:
-            df_cf_0 = matches.sample(100 if matches.shape[0] >= 100 else matches.shape[0], random_state=42).copy()
-        else:
-            print(f'The dataset {dsName} does not have cf output to be tested')
-            df_cf_0 = pd.DataFrame([])
-
-    # For the 1 class
-    test_cf_set = df_test[(df_test['output'] == test_pred) & (df_test['output'] == 1)]
-    total_cf_set = df[(df['output'] == full_pred) & (df['output'] == 1)]
-
-    if test_cf_set.shape[0] >= 100:
-        df_cf_1 = test_cf_set.sample(100, random_state=42).copy()
-    else:
-        matches = total_cf_set
-        if matches.shape[0] > 0:
-            df_cf_1 = matches.sample(100 if matches.shape[0] >= 100 else matches.shape[0], random_state=42).copy()
-        else:
-            print(f'The dataset {dsName} does not have cf output to be tested')
-            df_cf_1 = pd.DataFrame([])
-
     # Save datasets
     df_train.to_csv(f'../experiments_data/{dsName}_TRAINDATASET.csv')
     if len(df_oh) > 0:
         df_oh_train.to_csv(f'../experiments_data/{dsName}_TRAINOHDATASET.csv')
     df_test.to_csv(f'../experiments_data/{dsName}_TESTDATASET.csv')
+
     if len(df_oh) > 0:
         df_oh_test.to_csv(f'../experiments_data/{dsName}_TESTOHDATASET.csv')
-    df_cf_0.to_csv(f'../experiments_data/{dsName}_CFDATASET_0.csv')
-    df_cf_1.to_csv(f'../experiments_data/{dsName}_CFDATASET_1.csv')
+    df_validation.to_csv(f'../experiments_data/{dsName}_VALIDATIONDATASET.csv')
 
+    if len(df_oh) > 0:
+        df_oh_validation.to_csv(f'../experiments_data/{dsName}_VALIDATIONOHDATASET.csv')
+
+    for class_n in [0, 1]:
+        # For each class
+
+        test_factual_set = df_test[(df_test['output'] == class_n)]
+        validation_factual_set = df_validation[(df_validation['output'] == class_n)]
+        train_factual_set = df_train[(df_train['output'] == class_n)]
+
+        if test_factual_set.shape[0] >= 100:
+            # Test set has sufficient rows
+            df_factual = test_factual_set.sample(100, random_state=42).copy()
+        else:
+            # Test does not have sufficient rows, get additional from validation
+
+            if validation_factual_set.shape[0] >= 100 - test_factual_set.shape[0]:
+                additional_validation = validation_factual_set.sample(100 - test_factual_set.shape[0], random_state=42).copy()
+            else:
+                additional_validation = validation_factual_set.copy()
+
+            df_factual = pd.concat([test_factual_set, additional_validation])
+
+            if df_factual.shape[0] < 100:
+                # Validation and test are not sufficient, get from training
+
+                if train_factual_set.shape[0] >= 100 - df_factual.shape[0]:
+                    additional_training = train_factual_set.sample(100 - df_factual.shape[0], random_state=42).copy()
+                else:
+                    additional_training = train_factual_set
+
+                df_factual = pd.concat([df_factual, additional_training])
+
+        # Assert there's no duplicated row
+        assert pd.DataFrame(df_factual.index).duplicated().sum() == 0
+
+        # Save factual dataset
+        df_factual.to_csv(f'../experiments_data/{dsName}_CFDATASET_{str(class_n)}.csv')
