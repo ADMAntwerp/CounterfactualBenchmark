@@ -3,6 +3,7 @@
  from the External Model Generator notebook"""
 
 import pandas as pd
+import numpy as np
 
 from tensorflow.keras.models import load_model
 
@@ -26,10 +27,17 @@ for dsName in VAR_TYPES.keys():
         df = pd.read_csv(f'../data/NORM_{dsName}.csv')
         df_oh = []
 
-    # Define the majority class as 0 and the other classes as 1 (following the same treatment
-    # given in the model generation)
-    most_common_class = df['output'].value_counts().index[0]
-    df['output'] = df['output'].apply(lambda x: 1 if x == most_common_class else 0)
+    # Load model
+    model = load_model(f'../models/{dsName}.h5')
+
+    # Get prediction labels
+    if cat_feats:
+        predicted_y = np.apply_along_axis(np.argmax, 1, model.predict(df_oh.drop(columns=['output'])))
+    else:
+        predicted_y = np.apply_along_axis(np.argmax, 1, model.predict(df.drop(columns=['output'])))
+
+    # Substitute the original labels by the predicted labels
+    df['output'] = predicted_y
 
     df_y_original = df['output'].copy()
     df_oh_y_original = df['output'].copy()
@@ -59,17 +67,7 @@ for dsName in VAR_TYPES.keys():
     if len(df_oh) > 0:
         df_oh_test = df_oh.loc[idxs_test['index'].to_list()].copy()
 
-    # Load model
-    # model = CFmodel.CreateModel(dsName, str(int(c)))
-    model = load_model(f'../models/{dsName}.h5')
 
-    # Sample 100 CF for each category in the DS
-    if len(df_oh) > 0:
-        df_model = df_oh
-        df_model_test = df_oh_test
-    else:
-        df_model = df
-        df_model_test = df_test
 
     # Save datasets
     df_train.to_csv(f'../experiments_data/{dsName}_TRAINDATASET.csv')

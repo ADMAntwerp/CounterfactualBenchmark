@@ -138,7 +138,7 @@
 1401,low,vhigh,5more,more,big,low,1
 213,vhigh,high,5more,more,big,low,1
 80,vhigh,vhigh,4,more,big,high,1
-688,high,med,3,4,med,med,1
+688,high,med,3,4,med,med,0
 10,vhigh,vhigh,2,4,small,med,1
 1302,low,vhigh,2,2,big,low,1
 182,vhigh,high,4,more,small,high,1
@@ -234,7 +234,7 @@
 927,med,vhigh,4,4,small,low,1
 460,high,vhigh,3,2,small,med,1
 128,vhigh,high,2,more,small,high,1
-796,high,low,3,4,med,med,1
+796,high,low,3,4,med,med,0
 406,vhigh,low,5more,2,small,med,1
 894,med,vhigh,3,2,med,low,1
 1668,low,low,3,more,med,low,1
