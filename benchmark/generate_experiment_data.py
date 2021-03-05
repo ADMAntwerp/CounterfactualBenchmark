@@ -1,5 +1,8 @@
+"""This module generates all experiments data based on the processed data from
+ the External Dataset Treatment notebook and from the train/validation/test indexes
+ from the External Model Generator notebook"""
+
 import pandas as pd
-import numpy as np
 
 from tensorflow.keras.models import load_model
 
@@ -23,7 +26,8 @@ for dsName in VAR_TYPES.keys():
         df = pd.read_csv(f'../data/NORM_{dsName}.csv')
         df_oh = []
 
-    # Define the majority class as 0 and the other classes as 1
+    # Define the majority class as 0 and the other classes as 1 (following the same treatment
+    # given in the model generation)
     most_common_class = df['output'].value_counts().index[0]
     df['output'] = df['output'].apply(lambda x: 1 if x == most_common_class else 0)
 
