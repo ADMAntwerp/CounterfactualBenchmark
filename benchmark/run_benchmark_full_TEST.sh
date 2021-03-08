@@ -92,7 +92,7 @@ run_experiments_dataset () {
   while [ $(( $partial_exp_date - $init_exp_date )) -lt $6 ]
   do
     total_lines=$(wc -l < $LOG_FOLDER/$3_$4_$5.log)
-    if [ $total_lines -eq $(( $2 + 1 ))) ]; then
+    if [ $total_lines -eq $(( $2 + 1 )) ]; then
       partial_exp_date=$(( $init_exp_date + $6 ));
     else
       partial_exp_date=$(date +%s);
