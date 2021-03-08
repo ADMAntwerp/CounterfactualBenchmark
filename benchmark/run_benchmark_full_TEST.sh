@@ -111,13 +111,13 @@ run_experiments_dataset () {
 # 3 - bench_algorithm
 run_loop () {
 
-  if [ $1 -eq 0 ]; then
-    LIMIT_0=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_0.csv) - 2 ));
-  else
-    LIMIT_0=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
-  fi
-
-  run_experiments_dataset $2 0 $LIMIT_0 $3 0 $1 1800 &&
+#  if [ $1 -eq 0 ]; then
+#    LIMIT_0=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_0.csv) - 2 ));
+#  else
+#    LIMIT_0=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
+#  fi
+#
+#  run_experiments_dataset $2 0 $LIMIT_0 $3 0 $1 1800 &&
 
 #  if [ $1 -eq 0 ]; then
 #    LIMIT_1=$(( $(wc -l < ../experiments_data/CarEvaluation_CFDATASET_0.csv) - 2 ));
@@ -277,7 +277,7 @@ run_loop () {
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_1.csv) - 2 ));
   fi
 
-  run_experiments_dataset $2 0 49 $3 20 $1 1800 &&
+  run_experiments_dataset $2 0 49 $3 20 $1 300 &&
 
   if [ $1 -eq 0 ]; then
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_0.csv) - 2 ));
@@ -285,7 +285,7 @@ run_loop () {
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_1.csv) - 2 ));
   fi
 
-  run_experiments_dataset $2 50 $LIMIT_20 $3 20 $1 1800
+  run_experiments_dataset $2 50 $LIMIT_20 $3 20 $1 300
 
 #  if [ $1 -eq 0 ]; then
 #    LIMIT_21=$(( $(wc -l < ../experiments_data/StatlogGC_CFDATASET_0.csv) - 2 ));
