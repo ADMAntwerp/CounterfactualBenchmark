@@ -131,7 +131,6 @@ run_experiments_dataset () {
 
 } &&
 
-conda activate SYNAS &&
 for EXPERIMENT in 0 1 2
 do
   if [ $EXPERIMENT -eq 0 ]; then
@@ -149,6 +148,8 @@ do
 
   # SYNAS RUN
   bench_algorithm=benchmark_SYNAS.py
+
+  conda activate SYNAS &&
 
   run_experiments_dataset $RESULT_FOLDER 1 $bench_algorithm 0 $CAT 2400 1 2 3 &&
 
