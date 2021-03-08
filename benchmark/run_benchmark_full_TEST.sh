@@ -78,9 +78,9 @@ run_experiments_dataset () {
 
   mkdir -p $LOG_FOLDER
 
-  touch $LOG_FOLDER/$4_$5_$6.log;
-  rm $LOG_FOLDER/$4_$5_$6.log;
-  touch $LOG_FOLDER/$4_$5_$6.log;
+  touch $LOG_FOLDER/$2_$3_$4_$5_$6.log;
+  rm $LOG_FOLDER/$2_$3_$4_$5_$6.log;
+  touch $LOG_FOLDER/$2_$3_$4_$5_$6.log;
 
   for DSIDX in $(seq $2 $3)
   do
@@ -92,7 +92,7 @@ run_experiments_dataset () {
 
   while [ $(( $partial_exp_date - $init_exp_date )) -lt $7 ]
   do
-    total_lines=$(wc -l < $LOG_FOLDER/$4_$5_$6.log)
+    total_lines=$(wc -l < $LOG_FOLDER/$2_$3_$4_$5_$6.log)
     if [ $total_lines -eq $(( $3 + 1 - $2 )) ]; then
       partial_exp_date=$(( $init_exp_date + $7 ));
     else
