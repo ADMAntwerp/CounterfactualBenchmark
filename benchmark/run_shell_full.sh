@@ -7,5 +7,5 @@ if ! timeout 1800 python $1 $2 $3 $4 $5 ; then
 else
   final_date=$(date +%s)
   total_time=$((final_date-init_date))
-  echo 'PROCESS TOOK' $total_time 'SECONDS SUCCESS in ' $1 ' AND DSNAME ' $2 >> $6/$1_$2_$3.log
+  echo 'PROCESS TOOK' $total_time 'SECONDS SUCCESS in ' $1 ' AND DSNAME ' $2 >> $6/$7_$8_$1_$2_$3.log
 fi
