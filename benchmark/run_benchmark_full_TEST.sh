@@ -84,7 +84,7 @@ run_experiments_dataset () {
 
   for DSIDX in $(seq $2 $3)
   do
-    sh run_shell_full.sh $4 $5 $6 $DSIDX $1 $LOG_FOLDER $2 $3 &
+    sh run_shell_full_TEST.sh $4 $5 $6 $DSIDX $1 $LOG_FOLDER $2 $3 &
   done;
 
   init_exp_date=$(date +%s)
