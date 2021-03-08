@@ -277,7 +277,7 @@ run_loop () {
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_1.csv) - 2 ));
   fi
 
-  run_experiments_dataset $2 0 49 $3 20 $1 1800 &&
+  run_experiments_dataset $2 0 32 $3 20 $1 1800 &&
 
   if [ $1 -eq 0 ]; then
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_0.csv) - 2 ));
@@ -285,7 +285,15 @@ run_loop () {
     LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_1.csv) - 2 ));
   fi
 
-  run_experiments_dataset $2 50 $LIMIT_20 $3 20 $1 1800 &&
+  run_experiments_dataset $2 33 64 $3 20 $1 1800 &&
+
+  if [ $1 -eq 0 ]; then
+    LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_0.csv) - 2 ));
+  else
+    LIMIT_20=$(( $(wc -l < ../experiments_data/InternetAdv_CFDATASET_1.csv) - 2 ));
+  fi
+
+  run_experiments_dataset $2 65 $LIMIT_20 $3 20 $1 1800 &&
 
   if [ $1 -eq 0 ]; then
     LIMIT_21=$(( $(wc -l < ../experiments_data/StatlogGC_CFDATASET_0.csv) - 2 ));
