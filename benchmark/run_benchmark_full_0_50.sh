@@ -119,8 +119,6 @@ run_loop () {
 
   if [ $LIMIT_0 -gt 49 ]; then
     LIMIT_0=49
-  else
-    LIMIT_0=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_0 $3 0 $1 1800 &&
@@ -133,8 +131,6 @@ run_loop () {
 
   if [ $LIMIT_1 -gt 49 ]; then
     LIMIT_1=49
-  else
-    LIMIT_1=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_1 $3 1 $1 1800 &&
@@ -147,8 +143,6 @@ run_loop () {
 
   if [ $LIMIT_2 -gt 49 ]; then
     LIMIT_2=49
-  else
-    LIMIT_2=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_2 $3 2 $1 1800 &&
@@ -161,8 +155,6 @@ run_loop () {
 
   if [ $LIMIT_3 -gt 49 ]; then
     LIMIT_3=49
-  else
-    LIMIT_3=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_3 $3 3 $1 1800 &&
@@ -175,8 +167,6 @@ run_loop () {
 
   if [ $LIMIT_4 -gt 49 ]; then
     LIMIT_4=49
-  else
-    LIMIT_4=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_4 $3 4 $1 1800 &&
@@ -189,8 +179,6 @@ run_loop () {
 
   if [ $LIMIT_5 -gt 49 ]; then
     LIMIT_5=49
-  else
-    LIMIT_5=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_5 $3 5 $1 1800 &&
@@ -203,8 +191,6 @@ run_loop () {
 
   if [ $LIMIT_6 -gt 49 ]; then
     LIMIT_6=49
-  else
-    LIMIT_6=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_6 $3 6 $1 1800 &&
@@ -217,8 +203,6 @@ run_loop () {
 
   if [ $LIMIT_7 -gt 49 ]; then
     LIMIT_7=49
-  else
-    LIMIT_7=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_7 $3 7 $1 1800 &&
@@ -231,8 +215,6 @@ run_loop () {
 
   if [ $LIMIT_8 -gt 49 ]; then
     LIMIT_8=49
-  else
-    LIMIT_8=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_8 $3 8 $1 1800 &&
@@ -245,8 +227,6 @@ run_loop () {
 
   if [ $LIMIT_9 -gt 49 ]; then
     LIMIT_9=49
-  else
-    LIMIT_9=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_9 $3 9 $1 1800 &&
@@ -259,8 +239,6 @@ run_loop () {
 
   if [ $LIMIT_10 -gt 49 ]; then
     LIMIT_10=49
-  else
-    LIMIT_10=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_10 $3 10 $1 1800 &&
@@ -273,8 +251,6 @@ run_loop () {
 
   if [ $LIMIT_11 -gt 49 ]; then
     LIMIT_11=49
-  else
-    LIMIT_11=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_11 $3 11 $1 1800 &&
@@ -287,8 +263,6 @@ run_loop () {
 
   if [ $LIMIT_12 -gt 49 ]; then
     LIMIT_12=49
-  else
-    LIMIT_12=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_12 $3 12 $1 1800 &&
@@ -301,8 +275,6 @@ run_loop () {
 
   if [ $LIMIT_13 -gt 49 ]; then
     LIMIT_13=49
-  else
-    LIMIT_13=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_13 $3 13 $1 1800 &&
@@ -315,8 +287,6 @@ run_loop () {
 
   if [ $LIMIT_14 -gt 49 ]; then
     LIMIT_14=49
-  else
-    LIMIT_14=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_14 $3 14 $1 1800 &&
@@ -329,8 +299,6 @@ run_loop () {
 
   if [ $LIMIT_15 -gt 49 ]; then
     LIMIT_15=49
-  else
-    LIMIT_15=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_15 $3 15 $1 1800 &&
@@ -343,8 +311,6 @@ run_loop () {
 
   if [ $LIMIT_16 -gt 49 ]; then
     LIMIT_16=49
-  else
-    LIMIT_16=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_16 $3 16 $1 1800 &&
@@ -357,8 +323,6 @@ run_loop () {
 
   if [ $LIMIT_17 -gt 49 ]; then
     LIMIT_17=49
-  else
-    LIMIT_17=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_17 $3 17 $1 1800 &&
@@ -371,8 +335,6 @@ run_loop () {
 
   if [ $LIMIT_18 -gt 49 ]; then
     LIMIT_18=49
-  else
-    LIMIT_18=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_18 $3 18 $1 1800 &&
@@ -385,8 +347,6 @@ run_loop () {
 
   if [ $LIMIT_19 -gt 49 ]; then
     LIMIT_19=49
-  else
-    LIMIT_19=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_19 $3 19 $1 1800 &&
@@ -423,8 +383,6 @@ run_loop () {
 
   if [ $LIMIT_21 -gt 49 ]; then
     LIMIT_21=49
-  else
-    LIMIT_21=$(( $(wc -l < ../experiments_data/BalanceScale_CFDATASET_1.csv) - 2 ));
   fi
 
   run_experiments_dataset $2 0 $LIMIT_21 $3 21 $1 1800
