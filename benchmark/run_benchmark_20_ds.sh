@@ -1,0 +1,197 @@
+#!/bin/bash
+# Run benchmark on very large dataset, requiring more memory resources
+source ~/anaconda3/etc/profile.d/conda.sh
+conda init bash&&
+
+# Initial Setup with required Software
+echo "Initializing installations"
+if [ $(id -u) -eq 0 ]; then
+  # Sudo user
+  apt install build-essential -y ;
+  apt install wine64 -y ;
+else
+  # Non-sudo user
+  sudo apt install build-essential -y ;
+  sudo apt install wine64 -y ;
+fi
+
+# Create All Conda Environments Needed
+echo "Creating conda environments"
+conda create --name ALIBIC python=3.7 -y &&
+sleep 10
+conda activate ALIBIC &&
+pip install -r ../framework_requirements/alibic_requirements.txt &&
+
+conda create --name CADEX python=3.6 -y &&
+sleep 10
+conda activate CADEX &&
+pip install -r ../framework_requirements/cadex_requirements.txt &&
+
+conda create --name DICE python=3.7 -y &&
+sleep 10
+conda activate DICE &&
+pip install -r ../framework_requirements/dice_requirements.txt &&
+
+conda create --name GROWINGSPHERES python=3.6 -y &&
+sleep 10
+conda activate GROWINGSPHERES &&
+pip install -r ../framework_requirements/growingspheres_requirements.txt &&
+
+conda create --name LORE python=3.7 -y &&
+sleep 10
+conda activate LORE &&
+pip install -r ../framework_requirements/lore_requirements.txt &&
+
+conda create --name MACE python=3.6 -y &&
+sleep 10
+conda activate MACE &&
+pip install -r ../framework_requirements/mace_requirements.txt &&
+pysmt-install --z3 --confirm-agreement &&
+
+
+conda create --name MLEXPLAIN python=3.7 -y &&
+sleep 10
+conda activate MLEXPLAIN &&
+pip install -r ../framework_requirements/mlexplain_requirements.txt &&
+
+conda create --name SEDC python=3.7 -y &&
+sleep 10
+conda activate SEDC &&
+pip install -r ../framework_requirements/sedc_requirements.txt &&
+
+conda create --name SYNAS python=3.7 -y &&
+sleep 10
+conda activate SYNAS &&
+pip install -r ../framework_requirements/synas_requirements.txt &&
+
+# Run all class 0 Datasets
+# 1 - Results folder
+# 2 - Initial row number
+# 3 - Final row number
+# 4 - Framework run algorithm
+# 5 - Dataset 1
+# 6 - Class
+# 7 - Timeout
+run_experiments_dataset () {
+
+  LOG_FOLDER=./log_bench/$1
+
+  mkdir -p $LOG_FOLDER
+
+  touch $LOG_FOLDER/$2_$3_$4_$5_$6.log;
+  rm $LOG_FOLDER/$2_$3_$4_$5_$6.log;
+  touch $LOG_FOLDER/$2_$3_$4_$5_$6.log;
+
+  for DSIDX in $(seq $2 $3)
+  do
+    sh run_shell_full.sh $4 $5 $6 $DSIDX $1 $LOG_FOLDER $2 $3 &
+  done;
+
+  init_exp_date=$(date +%s)
+  partial_exp_date=$(date +%s)
+
+  while [ $(( $partial_exp_date - $init_exp_date )) -lt $7 ]
+  do
+    total_lines=$(wc -l < $LOG_FOLDER/$2_$3_$4_$5_$6.log)
+    if [ $total_lines -eq $(( $3 + 1 - $2 )) ]; then
+      partial_exp_date=$(( $init_exp_date + $7 ));
+    else
+      partial_exp_date=$(date +%s);
+    fi
+    echo $(( $partial_exp_date - $init_exp_date ));
+    echo $total_lines;
+    sleep 10;
+  done
+
+} &&
+
+# Run Experiment loop
+# 1 - CAT
+# 2 - RESULT_FOLDER
+# 3 - bench_algorithm
+run_loop () {
+  # Only run the 20 dataset
+
+  run_experiments_dataset $2 0 32 $3 20 $1 1800 &&
+
+  run_experiments_dataset $2 33 64 $3 20 $1 1800 &&
+
+  run_experiments_dataset $2 65 99 $3 20 $1 1800
+
+} &&
+
+for EXPERIMENT in 0 1 2 3
+do
+  if [ $EXPERIMENT -eq 0 ]; then
+    RESULT_FOLDER=results
+    CAT=0
+  fi
+  if [ $EXPERIMENT -eq 1 ]; then
+    RESULT_FOLDER=results
+    CAT=1
+  fi
+  if [ $EXPERIMENT -eq 2 ]; then
+    RESULT_FOLDER=replication
+    CAT=0
+  fi
+  if [ $EXPERIMENT -eq 3 ]; then
+    RESULT_FOLDER=replication
+    CAT=1
+  fi
+
+  # SYNAS RUN
+  bench_algorithm=benchmark_SYNAS.py
+  conda activate SYNAS &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # SEDC RUN
+  bench_algorithm=benchmark_SEDC.py
+  conda activate SEDC &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # MLEXPLAIN RUN
+  bench_algorithm=benchmark_MLEXPLAIN.py
+  conda activate MLEXPLAIN &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # MACE RUN
+  bench_algorithm=benchmark_MACE.py
+  conda activate MACE &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # LORE RUN
+  bench_algorithm=benchmark_LORE.py
+  conda activate LORE &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # GROWINGSPHERES3 RUN
+  bench_algorithm=benchmark_GROWINGSPHERES3.py
+  conda activate GROWINGSPHERES &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # GROWINGSPHERES4 RUN
+  bench_algorithm=benchmark_GROWINGSPHERES4.py
+  conda activate GROWINGSPHERES &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # DICE RUN
+  bench_algorithm=benchmark_DiCE.py
+  conda activate DICE &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # CADEX RUN
+  bench_algorithm=benchmark_CADEX.py
+  conda activate CADEX &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # ALIBICNOGRAD RUN
+  bench_algorithm=benchmark_ALIBICNOGRAD.py
+  conda activate ALIBIC &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm &&
+
+  # ALIBIC RUN
+  bench_algorithm=benchmark_ALIBIC.py
+  conda activate ALIBIC &&
+  run_loop $CAT $RESULT_FOLDER $bench_algorithm
+
+done
