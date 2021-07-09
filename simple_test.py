@@ -83,15 +83,16 @@ def framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_
     return cf, time_cf_generation
 
 
-# Make the experiments for both classes
-for c in [0, 1]:
-    # Make experiments for the first 10 indexes
-    for i in range(10):
-        # Make experiments for user's determined datasets
-        for dsIdx, dsName, dsFeatsTypes in enumerate(VAR_TYPES.items()):
-            if len(dsFeatsTypes['numerical'])>0 and len(dsFeatsTypes['categorical']==0) and 'numerical' in test_ds_types:
+# Make experiments for user's determined datasets
+for dsIdx, infoDataSet in enumerate(VAR_TYPES.items()):
+    dsName, dsFeatsTypes = infoDataSet
+    # Make the experiments for both classes
+    for c in [0, 1]:
+        # Make experiments for the first 10 indexes
+        for i in range(10):
+            if len(dsFeatsTypes['numerical'])>0 and len(dsFeatsTypes['categorical'])==0 and 'numerical' in test_ds_types:
                 run_experiment(framework_name, framework_tester, c, i, output_number, [dsIdx])
-            if len(dsFeatsTypes['numerical'])==0 and len(dsFeatsTypes['categorical']>0) and 'categorical' in test_ds_types:
+            if len(dsFeatsTypes['numerical'])==0 and len(dsFeatsTypes['categorical'])>0 and 'categorical' in test_ds_types:
                 run_experiment(framework_name, framework_tester, c, i, output_number, [dsIdx])
-            if len(dsFeatsTypes['numerical'])>0 and len(dsFeatsTypes['categorical']>0) and 'mixed' in test_ds_types:
+            if len(dsFeatsTypes['numerical'])>0 and len(dsFeatsTypes['categorical'])>0 and 'mixed' in test_ds_types:
                 run_experiment(framework_name, framework_tester, c, i, output_number, [dsIdx])
