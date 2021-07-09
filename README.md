@@ -1,5 +1,36 @@
 # Universal Counterfactual Benchmark Framework
 
+## Simple test tutorial
+The example below shows how to run a simple test using all datasets (generating 10 counterfactuals per dataset, total 210).
+
+### STEP 0 - Computer Requirements
+To run this benchmark to test your counterfactual generation algorithm you will need:
+* Ubuntu 18.04
+* Anaconda 2020 version or later
+
+### SETP 1 - Clone repository
+
+Clone this repository using:
+```shell script
+git clone 
+``` 
+
+### SETP 2 - Modify `simple_test.py` SCRIPT
+The script `simple_test.py` has the instructions on how you should add your CF generator. Modify it to include your algorithm.
+
+*You may want to copy and paste your code in the same folder
+*This script includes a dummy counterfactual generator (that only returns the factual instance), so you can run it first to understand more the framework and verify if the prerequisites are met.
+
+There are 6 fields to be modified:
+* Your framework name
+* Dataset selection to be tested (categorical, numerical, mixed)
+* Number of outputs from the neuronal network (1 or 2)
+* Initial configuration of the counterfactual generator
+* Generation of the counterfactual for the `factual` variable instance
+* Post-processing of the counterfactual generator result, output of counterfactual candidate
+
+
+
 ## Run multiple shell
 Example to run multiple without terminal message outputs
 ### Arguments
@@ -39,7 +70,17 @@ For this experiment, the Google Cloud Computing Engine was used with the followi
 * OS: Ubuntu 18.04
 * Disk: SSD 400 GB
 
+### For InternetAdv dataset
+* Series: N2D
+* Machine Type: Custom
+* Cores: 48
+* CPU Platform: AMD Rome or later
+* Memory: 384 GB
+* OS: Ubuntu 18.04
+* Disk: SSD 400 GB
+
 ### Benchmark steps on GCCE
+##### **WARNING - THE FOLLOWING STEPS WILL RUN A SCRIPT THAT CONSUMES LOTS OF RESOURCES, SEE THE COMPUTING REQUIREMENTS BEFORE USING**
 
 Use as root
 ```shell script
