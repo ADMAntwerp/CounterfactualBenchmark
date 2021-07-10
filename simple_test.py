@@ -7,7 +7,7 @@ All alterations that must be done are indicated in the comments "!!CHANGE BELOW!
 import time
 
 from benchmark.benchmark_template_row_instance import run_experiment
-from constants.var_types import VAR_TYPES
+from dataset_data.constants.var_types import VAR_TYPES
 
 # !!CHANGE BELOW!!: Add the name of your CF generation framework
 framework_name = 'NAME_OF_FRAMEWORK'
