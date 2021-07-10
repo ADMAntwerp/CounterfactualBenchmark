@@ -23,7 +23,7 @@ import numpy as np
 
 from benchmark.cfg import OHConverter
 
-from constants.var_types import VAR_TYPES
+from dataset_data.constants.var_types import VAR_TYPES
 
 CURRENT_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
 
@@ -83,32 +83,32 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
 
         # Load Dataset
         if cat_feats and num_feats:
-            df = pd.read_csv(f'{CURRENT_PATH}/../data/NORM_{dsName}.csv')
-            df_oh = pd.read_csv(f'{CURRENT_PATH}/../data/OH_NORM_{dsName}.csv')
+            df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/NORM_{dsName}.csv')
+            df_oh = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/OH_NORM_{dsName}.csv')
         elif cat_feats:
-            df = pd.read_csv(f'{CURRENT_PATH}/../data/{dsName}.csv')
-            df_oh = pd.read_csv(f'{CURRENT_PATH}/../data/OH_{dsName}.csv')
+            df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/{dsName}.csv')
+            df_oh = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/OH_{dsName}.csv')
         else:
-            df = pd.read_csv(f'{CURRENT_PATH}/../data/NORM_{dsName}.csv')
+            df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/NORM_{dsName}.csv')
             df_oh = []
 
         df_y_original = df['output'].copy()
         df_oh_y_original = df['output'].copy()
 
         # Load factual data
-        df_factual = pd.read_csv(f'{CURRENT_PATH}/../experiments_data/{dsName}_CFDATASET_{c}.csv').drop(columns=['Unnamed: 0'])
+        df_factual = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_CFDATASET_{c}.csv').drop(columns=['Unnamed: 0'])
 
         # Load train data
-        df_train = pd.read_csv(f'{CURRENT_PATH}/../experiments_data/{dsName}_TRAINDATASET.csv').drop(columns=['Unnamed: 0'])
+        df_train = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TRAINDATASET.csv').drop(columns=['Unnamed: 0'])
         # Load test data
-        df_test = pd.read_csv(f'{CURRENT_PATH}/../experiments_data/{dsName}_TESTDATASET.csv').drop(columns=['Unnamed: 0'])
+        df_test = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TESTDATASET.csv').drop(columns=['Unnamed: 0'])
         # Load OH if existent
         if cat_feats:
             # Load train data
-            df_oh_train = pd.read_csv(f'{CURRENT_PATH}/../experiments_data/{dsName}_TRAINOHDATASET.csv').drop(
+            df_oh_train = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TRAINOHDATASET.csv').drop(
                 columns=['Unnamed: 0'])
             # Load test data
-            df_oh_test = pd.read_csv(f'{CURRENT_PATH}/../experiments_data/{dsName}_TESTOHDATASET.csv').drop(columns=['Unnamed: 0'])
+            df_oh_test = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TESTOHDATASET.csv').drop(columns=['Unnamed: 0'])
         else:
             df_oh_train = df_train.copy()
             df_oh_test = df_test.copy()
@@ -128,7 +128,7 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
         with tf.compat.v1.Session() as session:
 
             # Load model
-            model_keras = load_model(f'{CURRENT_PATH}/../models/{dsName}.h5', compile=False)
+            model_keras = load_model(f'{CURRENT_PATH}/../model_data/models/{dsName}.h5', compile=False)
 
             # Get architecture info and pass to our NN architecture
             input_shape = model_keras.get_weights()[0].shape[0]
@@ -185,7 +185,7 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
             # Measure time to get CF only if we get a cf
             if len(cf_out) > 0:
                 timeRunFramework = [idx_cf, int(c), dsName, cf_time]
-                pd.DataFrame(timeRunFramework).T.to_csv(f'{CURRENT_PATH}/../{folder_name}/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
+                pd.DataFrame(timeRunFramework).T.to_csv(f'{CURRENT_PATH}/../benchmark_results/{folder_name}/TIME_{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', mode='a',
                                                         header=False, index=False)
 
             # Append result to result array and verify if it's a counterfactual
@@ -227,4 +227,4 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
                 print(f'No returned counterfactual candidate!\n')
                 cfs_framework.append([np.NaN] * (len(factual_oh)))
 
-            pd.DataFrame(cfs_framework).to_csv(f'{CURRENT_PATH}/../{folder_name}/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)
+            pd.DataFrame(cfs_framework).to_csv(f'{CURRENT_PATH}/../benchmark_results/{folder_name}/{str(int(c))}_{idx_cf}_{dsName}_{framework_name}.csv', index=False)
