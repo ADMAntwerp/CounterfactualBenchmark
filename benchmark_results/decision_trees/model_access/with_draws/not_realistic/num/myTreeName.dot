@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label="Columns Numerical <= 332.5\ngini = 0.5\nsamples = 1878\nvalue = [968, 910]\nclass = MA", fillcolor="#fdf7f3"] ;
+1 [label="Neurons <= 17.0\ngini = 0.496\nsamples = 1678\nvalue = [768, 910]\nclass = NM", fillcolor="#e0f0fb"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="Neurons <= 4.0\ngini = 0.457\nsamples = 921\nvalue = [325, 596]\nclass = NM", fillcolor="#a5d2f3"] ;
+1 -> 2 ;
+3 [label="gini = 0.407\nsamples = 151\nvalue = [108, 43]\nclass = MA", fillcolor="#efb388"] ;
+2 -> 3 ;
+4 [label="gini = 0.405\nsamples = 770\nvalue = [217, 553]\nclass = NM", fillcolor="#87c3ef"] ;
+2 -> 4 ;
+5 [label="fact_pred <= 1.0\ngini = 0.485\nsamples = 757\nvalue = [443, 314]\nclass = MA", fillcolor="#f7dac5"] ;
+1 -> 5 ;
+6 [label="gini = 0.499\nsamples = 222\nvalue = [105, 117]\nclass = NM", fillcolor="#ebf5fc"] ;
+5 -> 6 ;
+7 [label="gini = 0.465\nsamples = 535\nvalue = [338, 197]\nclass = MA", fillcolor="#f4caac"] ;
+5 -> 7 ;
+8 [label="gini = 0.0\nsamples = 200\nvalue = [200, 0]\nclass = MA", fillcolor="#e58139"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}
