@@ -1,0 +1,33 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label="Rows (train) <= 9706.5\ngini = 0.47\nsamples = 3834\nvalue = [2388, 1446]\nclass = MA", fillcolor="#f5cdb1"] ;
+1 [label="factual_share <= 0.231\ngini = 0.48\nsamples = 3408\nvalue = [2045, 1363]\nclass = MA", fillcolor="#f6d5bd"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="fact_pred <= 0.978\ngini = 0.18\nsamples = 100\nvalue = [90, 10]\nclass = MA", fillcolor="#e88f4f"] ;
+1 -> 2 ;
+3 [label="gini = 0.165\nsamples = 11\nvalue = [1, 10]\nclass = NM", fillcolor="#4da7e8"] ;
+2 -> 3 ;
+4 [label="gini = 0.0\nsamples = 89\nvalue = [89, 0]\nclass = MA", fillcolor="#e58139"] ;
+2 -> 4 ;
+5 [label="fact_pred <= 0.716\ngini = 0.483\nsamples = 3308\nvalue = [1955, 1353]\nclass = MA", fillcolor="#f7d8c2"] ;
+1 -> 5 ;
+6 [label="gini = 0.49\nsamples = 1053\nvalue = [600, 453]\nclass = MA", fillcolor="#f9e0ce"] ;
+5 -> 6 ;
+7 [label="gini = 0.48\nsamples = 2255\nvalue = [1355, 900]\nclass = MA", fillcolor="#f6d5bd"] ;
+5 -> 7 ;
+8 [label="factual_share <= 0.231\ngini = 0.314\nsamples = 426\nvalue = [343, 83]\nclass = MA", fillcolor="#eb9f69"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="fact_pred <= 0.736\ngini = 0.471\nsamples = 108\nvalue = [67, 41]\nclass = MA", fillcolor="#f5ceb2"] ;
+8 -> 9 ;
+10 [label="gini = 0.382\nsamples = 70\nvalue = [52, 18]\nclass = MA", fillcolor="#eead7e"] ;
+9 -> 10 ;
+11 [label="gini = 0.478\nsamples = 38\nvalue = [15, 23]\nclass = NM", fillcolor="#baddf6"] ;
+9 -> 11 ;
+12 [label="fact_pred <= 1.0\ngini = 0.229\nsamples = 318\nvalue = [276, 42]\nclass = MA", fillcolor="#e99457"] ;
+8 -> 12 ;
+13 [label="gini = 0.198\nsamples = 297\nvalue = [264, 33]\nclass = MA", fillcolor="#e89152"] ;
+12 -> 13 ;
+14 [label="gini = 0.49\nsamples = 21\nvalue = [12, 9]\nclass = MA", fillcolor="#f8e0ce"] ;
+12 -> 14 ;
+}
