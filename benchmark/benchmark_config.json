@@ -1,0 +1,52 @@
+{
+  "ALIBIC": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/alibic_requirements.txt",
+    "bechmark_algo_name": "benchmark_ALIBIC.py"
+  },
+  "ALIBICNOGRAD": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/alibic_requirements.txt",
+    "bechmark_algo_name": "benchmark_ALIBICNOGRAD.py"
+  },
+  "CADEX": {
+    "python": 3.6,
+    "requirements": "../frameworks/framework_requirements/cadex_requirements.txt",
+    "bechmark_algo_name": "benchmark_CADEX.py"
+  },
+  "DICE": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/dice_requirements.txt",
+    "bechmark_algo_name": "benchmark_DiCE.py"
+  },
+  "GROWINGSPHERES": {
+    "python": 3.6,
+    "requirements": "../frameworks/framework_requirements/growingspheres_requirements.txt",
+    "bechmark_algo_name": "benchmark_GROWINGSPHERES3.py"
+  },
+  "LORE": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/lore_requirements.txt",
+    "bechmark_algo_name": "benchmark_LORE.py"
+  },
+  "MACE": {
+    "python": 3.6,
+    "requirements": "../frameworks/framework_requirements/mace_requirements.txt",
+    "bechmark_algo_name": "benchmark_MACE.py"
+  },
+  "MLEXPLAIN": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/mlexplain_requirements.txt",
+    "bechmark_algo_name": "benchmark_MLEXPLAIN.py"
+  },
+  "SEDC": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/sedc_requirements.txt",
+    "bechmark_algo_name": "benchmark_SEDC.py"
+  },
+  "SYNAS": {
+    "python": 3.7,
+    "requirements": "../frameworks/framework_requirements/synas_requirements.txt",
+    "bechmark_algo_name": "benchmark_SYNAS.py"
+  }
+}
