@@ -1,5 +1,8 @@
 # Universal Counterfactual Benchmark Framework
 
+**A well-detailed tutorial on how to use this framework to test counterfactual generators 
+can be found in:** https://mazzine.medium.com/testing-counterfactual-generation-algorithms-905f5c45fc1c
+
 ## Simple test tutorial
 The example below shows how to run a simple test using all datasets (generating 10 counterfactuals per dataset, total 210).
 
