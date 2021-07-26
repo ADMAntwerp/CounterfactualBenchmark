@@ -130,6 +130,11 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
             # Load model
             model_keras = load_model(f'{CURRENT_PATH}/../model_data/models/{dsName}.h5', compile=False)
 
+            # Create the train dataset to evaluate
+            pred_train_out = pd.DataFrame(model_keras.predict(df_oh_train.drop(columns=['output']))).apply(lambda x: int(x[0] < x[1]), axis=1)
+            df_train_to_evaluate = df_train[pred_train_out == c]
+            df_oh_train_to_evaluate = df_oh_train[pred_train_out == c]
+
             # Get architecture info and pass to our NN architecture
             input_shape = model_keras.get_weights()[0].shape[0]
             hidden_layers_ws = model_keras.get_weights()[0].shape[1]
@@ -164,8 +169,8 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
                 converter = lambda x: x
 
             # Factual changed to be data from train set
-            factual = df_train.drop(columns=['output']).iloc[idx_cf].to_list()
-            factual_oh = converter.convert_to_oh(df_train.drop(columns=['output']).iloc[idx_cf].to_list()) if cat_feats else factual
+            factual = df_train_to_evaluate.drop(columns=['output']).iloc[idx_cf].to_list()
+            factual_oh = converter.convert_to_oh(df_train_to_evaluate.drop(columns=['output']).iloc[idx_cf].to_list()) if cat_feats else factual
 
             print(f'CF GENERATION: DATA - {dsName} / C - {c} /ROW - {idx_cf}')
             cf_out, cf_time = framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_feats,
