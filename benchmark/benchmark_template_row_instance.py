@@ -163,8 +163,9 @@ def run_experiment(framework_name, framework_tester, c, idx_cf, output_number=1,
             else:
                 converter = lambda x: x
 
-            factual = df_factual.drop(columns=['output']).iloc[idx_cf].to_list()
-            factual_oh = converter.convert_to_oh(df_factual.drop(columns=['output']).iloc[idx_cf].to_list()) if cat_feats else factual
+            # Factual changed to be data from train set
+            factual = df_train.drop(columns=['output']).iloc[idx_cf].to_list()
+            factual_oh = converter.convert_to_oh(df_train.drop(columns=['output']).iloc[idx_cf].to_list()) if cat_feats else factual
 
             print(f'CF GENERATION: DATA - {dsName} / C - {c} /ROW - {idx_cf}')
             cf_out, cf_time = framework_tester(df_train, df_oh_train, df_test, df_oh_test, num_feats, cat_feats,
