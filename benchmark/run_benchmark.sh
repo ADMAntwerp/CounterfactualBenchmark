@@ -106,7 +106,7 @@ run_loop () {
 
 } &&
 
-for EXPERIMENT in 0 1 2 3
+for EXPERIMENT in 0 1
 do
   if [ $EXPERIMENT -eq 0 ]; then
     RESULT_FOLDER=results
