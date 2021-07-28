@@ -13,10 +13,12 @@ conda init bash&&
 echo "Initializing installations"
 if [ $(id -u) -eq 0 ]; then
   # Sudo user
+  sudo apt update ;
   apt install build-essential -y ;
   apt install wine64 -y ;
 else
   # Non-sudo user
+  sudo apt update;
   sudo apt install build-essential -y ;
   sudo apt install wine64 -y ;
 fi
