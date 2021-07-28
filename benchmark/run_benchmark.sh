@@ -33,6 +33,10 @@ for algo_info in `echo "$algorithms_info" | grep -o -e "[^;]*"`; do
   conda activate $algo_name &&
   pip install -r $requirements_file_path
 
+  if [ "$algo_name" == "MACE" ]; then
+    pysmt-install --z3 --confirm-agreement
+  fi
+
 done
 
 # Run all class 0 Datasets
