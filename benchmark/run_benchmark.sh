@@ -96,7 +96,7 @@ run_loop () {
     dsIdx="$(cut -d',' -f1 <<<"$dataset_index")"
     dsName="$(cut -d',' -f2 <<<"$dataset_index")"
 
-    dsLimitRows=$(( $(wc -l < "../dataset_data/experiments_data/"$dsName"_CFDATASET_0.csv") - 2 ));
+    dsLimitRows=$(( $(wc -l < "../dataset_data/experiments_data/"$dsName"_CFDATASET_"$1".csv") - 2 ));
 
     if [ $5 -ge $dsLimitRows ]; then
       UPPER_LIMIT=$dsLimitRows
