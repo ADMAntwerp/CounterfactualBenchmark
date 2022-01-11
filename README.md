@@ -97,12 +97,12 @@ cd /tmp
 
 Download Anaconda 2020.11
 ```shell script
-curl -O https://repo.anaconda.com/archive/Anaconda3-2020.11-Linux-x86_64.sh
+curl -O https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
 ```
 
 Install Anaconda
 ```shell script
-bash Anaconda3-2020.11-Linux-x86_64.sh
+bash Anaconda3-2021.11-Linux-x86_64.sh
 ```
 
 Update source
