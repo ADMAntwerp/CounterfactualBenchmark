@@ -1,150 +1,94 @@
 # Universal Counterfactual Benchmark Framework
 
-**A well-detailed tutorial on how to use this framework to test counterfactual generators 
-can be found in:** https://mazzine.medium.com/testing-counterfactual-generation-algorithms-905f5c45fc1c
+Fastest way to test your tabular counterfactuals, evaluating 22 different datasets/models. All models are Keras/TensorFlow NN.
 
-## Simple test tutorial
-The example below shows how to run a simple test using all datasets (generating 10 counterfactuals per dataset, total 210).
+## Installation
 
-### STEP 0 - Computer Requirements
-To run this benchmark to test your counterfactual generation algorithm you will need:
-* Ubuntu 18.04
-* Anaconda 2020 version or later
-
-### SETP 1 - Clone repository
-
-Clone this repository using:
-```shell script
-git clone 
-``` 
-
-### SETP 2 - Modify `simple_test.py` SCRIPT
-The script `simple_test.py` has the instructions on how you should add your CF generator. Modify it to include your algorithm.
-
-*You may want to copy and paste your code in the same folder
-*This script includes a dummy counterfactual generator (that only returns the factual instance), so you can run it first to understand more the framework and verify if the prerequisites are met.
-
-There are 6 fields to be modified:
-* Your framework name
-* Dataset selection to be tested (categorical, numerical, mixed)
-* Number of outputs from the neuronal network (1 or 2)
-* Initial configuration of the counterfactual generator
-* Generation of the counterfactual for the `factual` variable instance
-* Post-processing of the counterfactual generator result, output of counterfactual candidate
-
-
-
-## Run multiple shell
-Example to run multiple without terminal message outputs
-### Arguments
-* A - Starting Row 
-* B - Ending Row
-* C - Name of the benchmark to be run
-* D - Dataset to be run (0 to 21)
-* E - Class (0 or 1)
-```shell script
-cd ./benchmark
-sh run_shell_multiple.sh A B C D E &> /dev/null
+```bash
+pip install cfbench
 ```
 
-Example:
-```shell script
-cd ./benchmark
-sh run_shell_multiple.sh 0 10 benchmark_MLEXPLAIN.py 0 0 &> /dev/null
+## Usage
+
+```python
+import numpy as np
+from cfbench.cfbench import BenchmarkCF
+
+# A simple CF generator, when the factual class is 1
+# return full 0 array, otherwise return full 1 array
+def my_cf_generator(factual_array, model):
+    if model.predict(np.array([factual_array]))[0][0] > 0.5:
+        return [0]*len(factual_array)
+    else:
+        return [1]*len(factual_array)
+
+# Create Benchmark Generator
+benchmark_generator = BenchmarkCF(framework_name='my_framework').create_generator()
+
+# The Benchmark loop
+for benchmark_data in benchmark_generator:
+    # Get factual array
+    factual_array = benchmark_data['factual_oh']
+    # Get Keras TensorFlow model
+    model = benchmark_data['model']
+
+    # Create CF
+    cf = my_cf_generator(factual_array, model)
+
+    # Get Evaluator
+    evaluator = benchmark_data['cf_evaluator']
+    # Evaluate CF
+    evaluator(cf, verbose=True)
 ```
 
-### WARNING
+## Further information
+We understand that different counterfactual generators need different data, so our generator provide multiple data described in the following table:
+<details>
+  <summary>Click here for detailed info</summary>
 
-**ONLY USE THE SCRIPTS `run_full_batch_DS0.sh` AND `run_full_batch_DS1.sh` IN A POWERFUL COMPUTER, THESE SCRIPTS RUN ALL DATASETS IN ONE TIME FOR ONE CLASS**
+The ``BenchmarkCF().create_generator()`` method returns a generator that provides the following data:
 
-Example:
-```shell script
-sh run_full_batch_DS0.sh benchmark_MLEXPLAIN.py &> /dev/null
+| key               | Type                              | Description                                                                                           |
+|-------------------|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| **factual_oh**    | list                              | Factual, one hot encoded (if categorical features), data                                              |
+| **model**         | tf.Keras.Model                    | Model to be explained                                                                                 |
+| **factual**       | list                              | Factual data (WITHOUT one hot encoding)                                                               |
+| **num_feats**     | list                              | Indexes of the numerical continuous features                                                          |
+| **cat_feats**     | list                              | Indexes of the categorical features                                                                   |
+| **cf_evaluator**  | BenchmarkGenerator.cf_evaluator   | Evaluates if the CF is indeed a CF. Returns [True, cf_array] if a CF and [False, nan_array] otherwise |
+| **oh_converter**  | cfbench.cfg.OHConverter.Converter | Converts to one hot ``.convert_to_oh`` or from one hot ``.convert``                                   |
+| **df_train**      | pandas.DataFrame                  | Dataframe of model's training data (WITHOUT one hot encoding)                                         |
+| **df_oh_train**   | pandas.DataFrame                  | Dataframe of model's training data (WITH one hot encoding)                                            |
+| **df_test**       | pandas.DataFrame                  | Dataframe of model's test data (WITHOUT one hot encoding)                                             |
+| **df_oh_test**    | pandas.DataFrame                  | Dataframe of model's test data (WITH one hot encoding)                                                |
+| **df_factual**    | pandas.DataFrame                  | Dataframe of factual data (WITHOUT one hot encoding)                                                  |
+| **tf_session**    | tf.Session                        | TensorFlow session                                                                                    |
+| **factual_idx**   | int                               | Index of the factual data in the factual dataset                                                      |
+| **factual_class** | int                               | Model's prediction (0 or 1) of the factual data                                                       |
+| **dsname**        | str                               | Name of the dataset                                                                                   |
+
+
+    
+</details>
+
+## TensorFlow Version compatibility
+This framework is supposed to be compatible with TensorFlow 1 and 2, however, problems can arise. Therefore, 
+if you encounter any problem, please open an issue.
+
+## Reference
+If you used this package on your experiments, here's the reference paper:
+```bibtex
+@Article{app11167274,
+AUTHOR = {de Oliveira, Raphael Mazzine Barbosa and Martens, David},
+TITLE = {A Framework and Benchmarking Study for Counterfactual Generating Methods on Tabular Data},
+JOURNAL = {Applied Sciences},
+VOLUME = {11},
+YEAR = {2021},
+NUMBER = {16},
+ARTICLE-NUMBER = {7274},
+URL = {https://www.mdpi.com/2076-3417/11/16/7274},
+ISSN = {2076-3417},
+DOI = {10.3390/app11167274}
+}
 ```
 
-## Instructions using on Google Cloud Computing Engine
-For this experiment, the Google Cloud Computing Engine was used with the following specification:
-### For datasets except InternetAdv
-* Series: N1
-* Machine Type: Custom
-* Cores: 52
-* CPU Platform: Intel Skylake or later
-* Memory: 195 GB
-* OS: Ubuntu 18.04
-* Disk: SSD 400 GB
-
-### For InternetAdv dataset
-* Series: N2D
-* Machine Type: Custom
-* Cores: 48
-* CPU Platform: AMD Rome or later
-* Memory: 384 GB
-* OS: Ubuntu 18.04
-* Disk: SSD 400 GB
-
-### Benchmark steps on GCCE
-##### **WARNING - THE FOLLOWING STEPS WILL RUN A SCRIPT THAT CONSUMES LOTS OF RESOURCES, SEE THE COMPUTING REQUIREMENTS BEFORE USING**
-
-Use as root
-```shell script
-sudo su
-```
-
-Go to temporary folder
-```shell script
-cd /tmp
-```
-
-Download Anaconda 2020.11
-```shell script
-curl -O https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
-```
-
-Install Anaconda
-```shell script
-bash Anaconda3-2021.11-Linux-x86_64.sh
-```
-
-Update source
-```shell script
-source ~/.bashrc
-```
-
-Clone this repo
-```shell script
-git clone ...
-```
-
-Enter repo benchmark folder
-```shell script
-cd CounterfactualBenchmark/benchmark
-```
-
-Update Ubuntu Package Manager
-```shell script
-apt-get update
-```
-
-Start run detached from current terminal (as it takes a long time to run)
-```shell script
-nohup bash run_benchmark_full_0_50.sh &> /dev/null
-```
-
-The next steps are made to guarantee the job will not stop even if the terminal session closes
-
-Press Ctrl+Z to make the process in background
-
-Return process run
-```shell script
-bg
-```
-
-Find process id (`PROCESS_ID`)
-```shell script
-jobs -l
-```
-
-Detach job from terminal session
-```shell script
-disown PROCESS_ID
-```

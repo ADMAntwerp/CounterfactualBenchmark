@@ -1,9 +1,0 @@
-tensorflow==2.4.1
-pandas==1.2.2
-scikit-learn==0.24.1
-scikit-image==0.18.1
-beautifulsoup4==4.9.3
-pillow==8.1.0
-attrs==20.3.0
-shap==0.38.1
-ipython==7.20.0
