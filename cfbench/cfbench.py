@@ -1,5 +1,3 @@
-import time
-
 from cfbench.benchmark_template_row_instance import BenchmarkGenerator
 
 

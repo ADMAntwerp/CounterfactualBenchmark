@@ -11,7 +11,7 @@ with open('HISTORY.md') as f:
 
 setup_args = dict(
     name='cfbench',
-    version='0.0.1',
+    version='0.0.3',
     description='Benchmarking tool for Counterfactual Explanations',
     long_description_content_type='text/markdown',
     long_description=README + '\n\n' + HISTORY,
@@ -21,7 +21,6 @@ setup_args = dict(
     keywords=['Counterfactual Explanations', 'Benchmarking', 'Machine Learning'],
     url='https://github.com/ADMAntwerp/CounterfactualBenchmark',
     download_url='https://pypi.org/project/cfbench/',
-    include_package_data=True,
 )
 
 install_requires = [

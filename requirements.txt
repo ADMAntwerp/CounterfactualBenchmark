@@ -1,2 +1,3 @@
 tensorflow
 pandas
+requests

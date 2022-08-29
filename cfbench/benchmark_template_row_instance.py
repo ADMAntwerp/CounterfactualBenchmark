@@ -13,7 +13,7 @@ import numpy as np
 
 from cfbench.cfg import OHConverter
 
-from dataset_data.constants.var_types import VAR_TYPES
+from cfbench.dataset_data.constants.var_types import VAR_TYPES
 
 CURRENT_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
 
@@ -109,13 +109,13 @@ class BenchmarkGenerator:
 
             # Load Dataset
             if self.cat_feats and self.num_feats:
-                df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/NORM_{dsName}.csv')
-                df_oh = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/OH_NORM_{dsName}.csv')
+                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/NORM_{dsName}.csv')
+                df_oh = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/OH_NORM_{dsName}.csv')
             elif self.cat_feats:
-                df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/{dsName}.csv')
-                df_oh = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/OH_{dsName}.csv')
+                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/{dsName}.csv')
+                df_oh = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/OH_{dsName}.csv')
             else:
-                df = pd.read_csv(f'{CURRENT_PATH}/../dataset_data/data/NORM_{dsName}.csv')
+                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/NORM_{dsName}.csv')
                 df_oh = []
 
             df_y_original = df['output'].copy()
@@ -123,27 +123,27 @@ class BenchmarkGenerator:
 
             # Load factual data
             self.df_factual = pd.read_csv(
-                f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_CFDATASET_{self.factual_class}.csv').drop(
+                f'{CURRENT_PATH}/dataset_data/experiments_data/{dsName}_CFDATASET_{self.factual_class}.csv').drop(
                 columns=['Unnamed: 0'])
             self.total_factuals = self.df_factual.shape[0]
 
             # Load train data
             self.df_train = pd.read_csv(
-                f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TRAINDATASET.csv').drop(
+                f'{CURRENT_PATH}/dataset_data/experiments_data/{dsName}_TRAINDATASET.csv').drop(
                 columns=['Unnamed: 0'])
             # Load test data
             self.df_test = pd.read_csv(
-                f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TESTDATASET.csv').drop(
+                f'{CURRENT_PATH}/dataset_data/experiments_data/{dsName}_TESTDATASET.csv').drop(
                 columns=['Unnamed: 0'])
             # Load OH if existent
             if self.cat_feats:
                 # Load train data
                 self.df_oh_train = pd.read_csv(
-                    f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TRAINOHDATASET.csv').drop(
+                    f'{CURRENT_PATH}/dataset_data/experiments_data/{dsName}_TRAINOHDATASET.csv').drop(
                     columns=['Unnamed: 0'])
                 # Load test data
                 self.df_oh_test = pd.read_csv(
-                    f'{CURRENT_PATH}/../dataset_data/experiments_data/{dsName}_TESTOHDATASET.csv').drop(
+                    f'{CURRENT_PATH}/dataset_data/experiments_data/{dsName}_TESTOHDATASET.csv').drop(
                     columns=['Unnamed: 0'])
             else:
                 self.df_oh_train = self.df_train.copy()
@@ -160,7 +160,7 @@ class BenchmarkGenerator:
                 self.df_oh_test['output'] = self.df_oh_test['output'].map({1: 0, 0: 1})
 
             # Load model
-            model_keras = load_model(f'{CURRENT_PATH}/../model_data/models/{dsName}.h5', compile=False)
+            model_keras = load_model(f'{CURRENT_PATH}/model_data/models/{dsName}.h5', compile=False)
 
             # Get session
             self.tf_session = backend.get_session()
