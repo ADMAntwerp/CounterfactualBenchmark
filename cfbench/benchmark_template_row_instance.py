@@ -4,14 +4,14 @@ import os
 
 import tensorflow as tf
 from tensorflow.keras.models import load_model
-from tensorflow.keras.layers import Dense, Input
-from tensorflow.keras.models import Model
+
 from keras import backend
 
 import pandas as pd
 import numpy as np
 
 from cfbench.cfg import OHConverter
+from cfbench.cfg.common import nn_ohe
 
 from cfbench.dataset_data.constants.var_types import VAR_TYPES
 
@@ -29,19 +29,6 @@ except AttributeError:
 tf.compat.v1.disable_v2_behavior()  # disable TF2 behaviour as alibi code still relies on TF1 constructs
 
 
-def _nn_ohe(input_shape, hidden_layers_ws, output_number):
-    x_in = Input(shape=(input_shape,))
-    x = Dense(hidden_layers_ws, activation='relu')(x_in)
-    x_out = Dense(2, activation='softmax')(x)
-    if output_number == 1:
-        x_bin = Dense(1, activation='linear')(x_out)
-        nn = Model(inputs=x_in, outputs=x_bin)
-    if output_number == 2:
-        nn = Model(inputs=x_in, outputs=x_out)
-
-    nn.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-    return nn
 
 
 class BenchmarkGenerator:
@@ -170,7 +157,7 @@ class BenchmarkGenerator:
             input_shape = model_keras.get_weights()[0].shape[0]
             hidden_layers_ws = model_keras.get_weights()[0].shape[1]
 
-            self.adapted_nn = _nn_ohe(input_shape, hidden_layers_ws, self.output_number)
+            self.adapted_nn = nn_ohe(input_shape, hidden_layers_ws, self.output_number)
             self.adapted_nn.build(input_shape=input_shape)
 
             self.adapted_nn.layers[1].set_weights(model_keras.layers[0].get_weights())
@@ -291,6 +278,7 @@ class BenchmarkGenerator:
                 'factual_class': self.factual_class,
                 'cf_found': cf_found,
                 'cf': processed_cf,
+                'factual': self.factual_oh,
             }]
             pd.to_pickle(
                 save_df,

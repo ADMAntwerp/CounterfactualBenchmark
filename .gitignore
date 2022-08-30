@@ -1,5 +1,8 @@
+send_results.sh
 cfbench_results/
 cfbench_results_processed/
+cfbench/dataset_data/
+cfbench/model_data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
