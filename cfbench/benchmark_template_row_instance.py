@@ -48,19 +48,19 @@ class BenchmarkGenerator:
 
     def __init__(
             self,
-            framework_name,
             output_number,
             ds_id_test,
             disable_gpu):
-        self.framework_name = framework_name
         self.output_number = output_number
         self.ds_id_tes = ds_id_test
 
         self.ds_idx = 0
         self.current_dsName = None
         self.factual_class = 0
+        self.current_factual_class = 0
         self.factual_idx = 0
         self.total_factuals = None
+        self.save_results = False
 
         if disable_gpu:
             # Disable GPU
@@ -96,12 +96,13 @@ class BenchmarkGenerator:
 
         dsName = list(VAR_TYPES.keys())[self.ds_id_tes[self.ds_idx]]
 
-        if dsName == self.current_dsName:
+        if dsName == self.current_dsName and self.current_factual_class == self.factual_class:
             # Go to next row
             self.factual_idx += 1
         else:
-            # Assign new dataset name
+            # Assign new dataset name and factual class
             self.current_dsName = dsName
+            self.current_factual_class = self.factual_class
 
             # Load feature type specifications
             self.cat_feats = VAR_TYPES[dsName]['categorical']
@@ -224,7 +225,8 @@ class BenchmarkGenerator:
             'dsname': self.current_dsName
         }
 
-    def cf_evaluator(self, cf_out: list, verbose: bool = False):
+    def cf_evaluator(self, cf_out: list, algorithm_name: str, verbose: bool = False, save_results: bool = False):
+        self.save_results = save_results
         # Verify if counterfactual (cf) is a list, the output MUST a list
         try:
             assert type(cf_out) == list
@@ -270,8 +272,29 @@ class BenchmarkGenerator:
                     logging.info(f'Counterfactual found!\nFactual class:{factual_class}\nCF class:{cf_class}\n')
                 else:
                     logging.info(f'Failed counterfactual!\nFactual class:{factual_class}\nCF class:{cf_class}\n')
-            return True, cf_out_oh
+            cf_found = True
+            processed_cf = cf_out_oh
         else:
             if verbose:
                 logging.info(f'No returned counterfactual candidate!\n')
-            return False, [np.NaN] * (len(self.factual_oh))
+            cf_found = False
+            processed_cf = [np.NaN] * (len(self.factual_oh))
+
+        # Save result in local folder
+        if save_results:
+            if not os.path.exists('./cfbench_results/'):
+                os.mkdir('./cfbench_results/')
+            save_df = [{
+                'algorithm_name': algorithm_name,
+                'dataset_name': self.current_dsName,
+                'factual_idx': self.factual_idx,
+                'factual_class': self.factual_class,
+                'cf_found': cf_found,
+                'cf': processed_cf,
+            }]
+            pd.to_pickle(
+                save_df,
+                f'./cfbench_results/'
+                f'{algorithm_name}_{self.current_dsName}_{self.factual_class}_{self.factual_idx}.pkl')
+
+        return cf_found, processed_cf

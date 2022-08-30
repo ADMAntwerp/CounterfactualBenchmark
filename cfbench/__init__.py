@@ -3,6 +3,7 @@ import shutil
 import tarfile
 import requests
 
+
 def _download_and_unzip_data(save_dir: str, url: str, file_name: str, folder_name: str) -> None:
     """
     Download and unzip a data file
@@ -25,6 +26,7 @@ def _download_and_unzip_data(save_dir: str, url: str, file_name: str, folder_nam
     tar.close()
 
     os.remove(f'{save_dir}/{folder_name}/{file_name}')
+
 
 # Get current script directory
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
