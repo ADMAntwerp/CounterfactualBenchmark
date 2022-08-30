@@ -44,7 +44,7 @@ def _count_files_in_dir(dir_path: str) -> int:
 
 # Check if the model folder has all required files by counting them
 if os.path.exists(f'{SCRIPT_DIR}/model_data'):
-    if _count_files_in_dir(f'{SCRIPT_DIR}/model_data') != 27:
+    if _count_files_in_dir(f'{SCRIPT_DIR}/model_data') < 27:
         shutil.rmtree(f'{SCRIPT_DIR}/model_data')
 
 # Verify if data folders are present
@@ -59,7 +59,7 @@ if not os.path.exists(f'{SCRIPT_DIR}/model_data'):
 
 # Check if the data folder has all required files by counting them
 if os.path.exists(f'{SCRIPT_DIR}/dataset_data'):
-    if _count_files_in_dir(f'{SCRIPT_DIR}/dataset_data') != 415:
+    if _count_files_in_dir(f'{SCRIPT_DIR}/dataset_data') < 415:
         shutil.rmtree(f'{SCRIPT_DIR}/dataset_data')
 
 # Verify if data folders are present

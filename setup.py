@@ -11,7 +11,7 @@ with open('HISTORY.md') as f:
 
 setup_args = dict(
     name='cfbench',
-    version='0.0.3',
+    version='0.0.4',
     description='Benchmarking tool for Counterfactual Explanations',
     long_description_content_type='text/markdown',
     long_description=README + '\n\n' + HISTORY,
@@ -26,6 +26,8 @@ setup_args = dict(
 install_requires = [
     'pandas',
     'tensorflow',
+    'requests',
+    'scipy'
 ]
 
 if __name__ == '__main__':

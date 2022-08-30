@@ -1,3 +1,4 @@
 tensorflow
 pandas
 requests
+scipy
