@@ -1,3 +1,4 @@
+.idea/
 send_results.sh
 cfbench_results/
 cfbench_results_processed/
