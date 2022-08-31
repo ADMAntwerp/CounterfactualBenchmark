@@ -3,6 +3,7 @@ import shutil
 
 import numpy as np
 import pandas as pd
+import scipy.stats as st
 
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -23,6 +24,7 @@ for factual_class_count in ['0', '1']:
     for dsname in VAR_TYPES.keys():
         total_factual += pd.read_csv(
             f'{CURRENT_PATH}/dataset_data/experiments_data/{dsname}_CFDATASET_{factual_class_count}.csv').shape[0]
+
 
 class BenchmarkCF:
 
@@ -62,38 +64,47 @@ def process_benchmark(algorithm_name: str):
     algorithm_df.to_pickle(f'./cfbench_results_processed/{algorithm_name}.pkl')
 
 
+def _calculate_metrics(metric_data):
+    metric_data_values = np.concatenate(metric_data.to_numpy())
+    metric_data_values_valid = metric_data_values[~np.isnan(metric_data_values)]
+    global_metric_mean = metric_data_values_valid.mean().round(2)
+    global_metric_error = st.t.interval(
+        0.95,
+        len(metric_data_values_valid) - 1,
+        loc=np.mean(metric_data_values_valid),
+        scale=st.sem(metric_data_values_valid))
+
+    return global_metric_mean, [error_value.round(2) for error_value in global_metric_error]
+
+
 def print_global_analysis(algorithm_name: str):
-    if os.path.exists(f'{CURRENT_PATH}/dataset_data/experiments_data/{algorithm_name}_results.pkl'):
-        algorithm_df = pd.read_pickle(f'{CURRENT_PATH}/dataset_data/experiments_data/{algorithm_name}_results.pkl')
+    if os.path.exists(f'./cfbench_results_processed/{algorithm_name}_analysis.pkl'):
+        algorithm_df = pd.read_pickle(f'./cfbench_results_processed/{algorithm_name}_analysis.pkl')
     else:
         raise ValueError(f'No results found for {algorithm_name}, please, run analyze_results({algorithm_name}) first')
 
-    global_coverage_class_flip = algorithm_df['validityFound'].apply(np.mean).mean().round(2)
-    global_coverage_class_flip_var = algorithm_df['validityFound'].apply(np.mean).var().round(2)
-    global_coverage = algorithm_df['validity'].apply(np.mean).mean().round(2)
-    global_coverage_var = algorithm_df['validity'].apply(np.mean).var().round(2)
-
-    global_sparsity = algorithm_df['sparsity'].apply(np.mean).mean().round(2)
-    global_sparsity_var = algorithm_df['sparsity'].apply(np.mean).var().round(2)
-    global_l2 = algorithm_df['l2'].apply(np.mean).mean().round(2)
-    global_l2_var = algorithm_df['l2'].apply(np.mean).var().round(2)
-    global_mad = algorithm_df['MAD'].apply(np.mean).mean().round(2)
-    global_mad_var = algorithm_df['MAD'].apply(np.mean).var().round(2)
-    global_md = algorithm_df['MD'].apply(np.mean).mean().round(2)
-    global_md_var = algorithm_df['MD'].apply(np.mean).var().round(2)
+    score_coverage_flip_mean, score_coverage_flip_error = _calculate_metrics(algorithm_df['validityFound'])
+    score_coverage_mean, score_coverage_error = _calculate_metrics(algorithm_df['validity'])
+    score_sparsity_mean, score_sparsity_error = _calculate_metrics(algorithm_df['sparsity'])
+    score_l2_mean, score_l2_error = _calculate_metrics(algorithm_df['l2'])
+    score_madd_mean, score_madd_error = _calculate_metrics(algorithm_df['MAD'])
+    score_md_mean, score_md_error = _calculate_metrics(algorithm_df['MD'])
+    cf_generation_time_mean, cf_generation_time_error = _calculate_metrics(algorithm_df['cf_generation_time'])
 
     data_report = {
-        'Global coverage': [global_coverage, global_coverage_var],
-        'Global coverage (class flip)': [global_coverage_class_flip, global_coverage_class_flip_var],
-        'Global sparsity': [global_sparsity, global_sparsity_var],
-        'Global L2 distance': [global_l2, global_l2_var],
-        'Global Mean Absolute Deviation': [global_mad, global_mad_var],
-        'Global Mahalanobis Distance': [global_md, global_md_var]
+        'Global coverage': [score_coverage_flip_mean, score_coverage_flip_error],
+        'Global coverage (class flip)': [score_coverage_mean, score_coverage_error],
+        'Global sparsity': [score_sparsity_mean, score_sparsity_error],
+        'Global L2 distance': [score_l2_mean, score_l2_error],
+        'Global Mean Absolute Deviation': [score_madd_mean, score_madd_error],
+        'Global Mahalanobis Distance': [score_md_mean, score_md_error],
+        'CF generation time': [score_coverage_flip_mean, score_coverage_flip_error]
     }
 
-    print("{:<40} {:<15} {:<15}".format('Metric', 'mean', 'variance'))
+    print("{:<60} {:<15}".format(algorithm_name, 'Error (95% C.I.)'))
+    print("{:<40} {:<15} {:<15} {:<15}".format('Metric', 'Mean', 'Lower bound', 'Upper bound'))
     for k, v in data_report.items():
-        print("{:<40} {:<15} {:<15}".format(k, v[0], v[1]))
+        print("{:<40} {:<15} {:<15} {:<15}".format(k, v[0], v[1][0], v[1][1]))
 
 
 def analyze_results(algorithm_name: str):
@@ -110,20 +121,6 @@ def analyze_results(algorithm_name: str):
             # Load feature type specifications
             cat_feats = VAR_TYPES[dsName]['categorical']
             num_feats = VAR_TYPES[dsName]['numerical']
-
-            # Load Dataset
-            if cat_feats and num_feats:
-                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/NORM_{dsName}.csv')
-                df_oh = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/OH_NORM_{dsName}.csv')
-            elif cat_feats:
-                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/{dsName}.csv')
-                df_oh = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/OH_{dsName}.csv')
-            else:
-                df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/NORM_{dsName}.csv')
-                df_oh = []
-
-            df_y_original = df['output'].copy()
-            df_oh_y_original = df['output'].copy()
 
             # Load train data
             df_train = pd.read_csv(
@@ -182,15 +179,11 @@ def analyze_results(algorithm_name: str):
             adapted_nn.layers[3].set_weights(
                 [np.array([[0.0], [1.0]], dtype=np.float32), np.array([0.0], dtype=np.float32)])
 
-            # If there are categorical features, create a CF OH entry
-            if cat_feats:
-                converter = OHConverter.Converter(df, cat_feats, list(df_oh.columns))
-            else:
-                converter = lambda x: x
-
             df_cf = df_all_cf[
                 (df_all_cf['dataset_name'] == dsName) & (df_all_cf['factual_class'] == int(current_factual_class))
             ].copy()
+
+            cf_generation_time = df_cf['cf_generation_time'].tolist()
 
             df_cf_data = df_cf.set_index('factual_idx').sort_index()
 
@@ -222,26 +215,35 @@ def analyze_results(algorithm_name: str):
             score_l2 = l2(df_cf, df_cf_found, df_fc_found)
             score_md = md(df_oh_train, df_cf, df_cf_found, df_fc_found)
 
+            ds_type = 'numerical'
+            if len(cat_columns) > 0:
+                ds_type = 'categorical'
+                if len(num_columns) > 0:
+                    ds_type = 'mixed'
+
             row_data = {
                 'dsname': dsName,
+                'ds_type': ds_type,
                 'factual_class': current_factual_class,
                 'framework': algorithm_name,
-                'validity': coverage_integrity,
-                'validityFound': score_coverage,
-                'sparsity': score_sparsity,
-                'l2': score_l2,
-                'RUC': bin_check,
-                'RMC': ohe_check,
-                'MAD': score_madd,
-                'MD': score_md
+                'validity': list(coverage_integrity),
+                'validityFound': list(score_coverage),
+                'sparsity': list(score_sparsity),
+                'l2': list(score_l2),
+                'RUC': list(bin_check),
+                'RMC': list(ohe_check),
+                'MAD': list(score_madd),
+                'MD': list(score_md),
+                'cf_generation_time': cf_generation_time,
             }
             df_rows_results.append(row_data)
 
     df_results = pd.DataFrame(df_rows_results)
-    df_results.to_pickle(f'{CURRENT_PATH}/dataset_data/experiments_data/{algorithm_name}_results.pkl')
+    df_results.to_pickle(f'./cfbench_results_processed/{algorithm_name}_analysis.pkl')
+    print_global_analysis(algorithm_name)
 
 
-def send_results(algorithm_name: str):
+def send_results(algorithm_name: str, generate_analysis: bool = True):
     # Create temporary folder
     temp_folder = '/tmp/cfbench_results_temp'
     if not os.path.exists(temp_folder):
@@ -250,8 +252,12 @@ def send_results(algorithm_name: str):
         shutil.rmtree(temp_folder)
         os.mkdir(temp_folder)
 
-    # Create result dataframe if not existent
-    process_benchmark(algorithm_name)
+    if generate_analysis:
+        # Create result dataframe if not existent
+        analyze_results(algorithm_name)
+
+    if not os.path.exists(f'./cfbench_results_processed/{algorithm_name}_analysis.pkl'):
+        raise Exception(f'Analysis file not found for {algorithm_name}')
 
     # Ask the user to fork the repository
     print('Please, fork the following repository: https://github.com/rmazzine/Ranking-Tabular-CF.git')
@@ -282,8 +288,8 @@ def send_results(algorithm_name: str):
         os.mkdir(f'{temp_folder}/results/{algorithm_name}')
 
     # Copy the result dataframe to the repository
-    shutil.copyfile(f'./cfbench_results_processed/{algorithm_name}.pkl',
-                    f'{temp_folder}/results/{algorithm_name}/{algorithm_name}.pkl')
+    shutil.copyfile(f'./cfbench_results_processed/{algorithm_name}_analysis.pkl',
+                    f'{temp_folder}/results/{algorithm_name}/{algorithm_name}_analysis.pkl')
 
     # Push the results to the repository
     print('Pushing the results to the repository...')
@@ -311,9 +317,9 @@ def _get_correct(df_cf, df_fc, model):
         labels_cf = model.predict(df_cf_found.to_numpy()).round()
 
         # Verify if the results flipped the classification and return only those that flipped it
-        return df_cf_found[labels_cf.reshape(-1, 1) != df_fc_found['output'].to_numpy() \
-            .reshape(-1, 1)], df_fc_found[labels_cf.reshape(-1, 1) != df_fc_found['output'] \
-            .to_numpy().reshape(-1, 1)]
+        out_cf = df_cf_found[labels_cf.reshape(-1, 1) != df_fc_found['output'].to_numpy().reshape(-1, 1)]
+        out_fc = df_fc_found[labels_cf.reshape(-1, 1) != df_fc_found['output'].to_numpy().reshape(-1, 1)]
+        return out_cf, out_fc
 
     # If there's no result, return empty frames
     return df_cf_found.iloc[:0], df_fc.iloc[:0]

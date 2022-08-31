@@ -212,7 +212,9 @@ class BenchmarkGenerator:
             'dsname': self.current_dsName
         }
 
-    def cf_evaluator(self, cf_out: list, algorithm_name: str, verbose: bool = False, save_results: bool = False):
+    def cf_evaluator(
+            self, cf_out: list, algorithm_name: str, cf_generation_time: float = None,
+            verbose: bool = False, save_results: bool = False):
         self.save_results = save_results
         # Verify if counterfactual (cf) is a list, the output MUST a list
         try:
@@ -279,6 +281,7 @@ class BenchmarkGenerator:
                 'cf_found': cf_found,
                 'cf': processed_cf,
                 'factual': self.factual_oh,
+                'cf_generation_time': cf_generation_time
             }]
             pd.to_pickle(
                 save_df,

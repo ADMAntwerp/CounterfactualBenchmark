@@ -225,5 +225,3 @@ def check_one_hot_integrity(df_cf, cat_columns):
     df_ohe_integrity = sum(check_groups) == len(check_groups)
 
     return (df_not_nan & df_ohe_integrity).to_numpy()
-
-
