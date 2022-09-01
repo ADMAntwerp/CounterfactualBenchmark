@@ -11,7 +11,7 @@ with open('HISTORY.md') as f:
 
 setup_args = dict(
     name='cfbench',
-    version='0.0.5',
+    version='0.0.6',
     description='Benchmarking tool for Counterfactual Explanations',
     long_description_content_type='text/markdown',
     long_description=README + '\n\n' + HISTORY,

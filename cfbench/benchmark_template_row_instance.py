@@ -45,11 +45,14 @@ class BenchmarkGenerator:
             output_number,
             ds_id_test,
             disable_gpu,
-            show_progress):
+            show_progress,
+            initial_idx,
+            final_idx,):
         self.output_number = output_number
-        self.ds_id_tes = ds_id_test
+        self.ds_id_test = ds_id_test
         self.show_progress = show_progress
 
+        self.exp_idx = 0
         self.ds_idx = 0
         self.current_dsName = None
         self.factual_class = 0
@@ -59,6 +62,8 @@ class BenchmarkGenerator:
         self.save_results = False
         self.start_time = None
         self.times_loop_list = []
+        self.initial_idx = initial_idx
+        self.final_idx = final_idx
 
         if disable_gpu:
             # Disable GPU
@@ -70,6 +75,10 @@ class BenchmarkGenerator:
                     assert device.device_type != 'GPU'
             except AttributeError:
                 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+        if self.initial_idx > 0:
+            for _ in range(self.initial_idx):
+                self.__next__()
 
     def __iter__(self):
         return self
@@ -102,11 +111,12 @@ class BenchmarkGenerator:
                 self.factual_class = 0
                 # Go to next dataset IDX
                 self.ds_idx += 1
-                # Verify if this a valid dataset index
-                if self.ds_idx >= len(self.ds_id_tes):
-                    raise StopIteration
 
-        dsName = list(VAR_TYPES.keys())[self.ds_id_tes[self.ds_idx]]
+        # Verify experiment index
+        if self.exp_idx >= self.final_idx:
+            raise StopIteration
+
+        dsName = list(VAR_TYPES.keys())[self.ds_id_test[self.ds_idx]]
 
         if dsName == self.current_dsName and self.current_factual_class == self.factual_class:
             # Go to next row
@@ -130,9 +140,6 @@ class BenchmarkGenerator:
             else:
                 df = pd.read_csv(f'{CURRENT_PATH}/dataset_data/data/NORM_{dsName}.csv')
                 df_oh = []
-
-            df_y_original = df['output'].copy()
-            df_oh_y_original = df['output'].copy()
 
             # Load factual data
             self.df_factual = pd.read_csv(
@@ -215,6 +222,8 @@ class BenchmarkGenerator:
         self.factual_oh = self.converter.convert_to_oh(
             self.df_factual.drop(columns=['output']).iloc[self.factual_idx].to_list()) \
             if self.cat_feats else self.factual
+
+        self.exp_idx += 1
 
         return {
             'df_train': self.df_train,

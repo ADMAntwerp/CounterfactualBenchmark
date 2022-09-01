@@ -1,3 +1,6 @@
+# 0.0.6 / 2022-09-01
+* Allow to add initial and final indexes
+
 # 0.0.5 / 2022-09-01
 * Fix metric reporting
 * Add experiment progress information

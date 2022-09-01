@@ -21,10 +21,18 @@ RUN_PATH = os.getcwd()
 
 class BenchmarkCF:
 
-    def __init__(self, output_number: int = 1, disable_gpu: bool = False, show_progress: bool = False):
+    def __init__(
+            self,
+            output_number: int = 1,
+            disable_gpu: bool = False,
+            show_progress: bool = False,
+            initial_idx: int = 0,
+            final_idx: int = TOTAL_FACTUAL,):
         self.output_number = output_number
         self.disable_gpu = disable_gpu
         self.show_progress = show_progress
+        self.initial_idx = initial_idx
+        self.final_idx = final_idx
 
     def create_generator(
             self,
@@ -39,7 +47,9 @@ class BenchmarkCF:
             output_number=self.output_number,
             ds_id_test=dataset_idx,
             disable_gpu=self.disable_gpu,
-            show_progress=self.show_progress)
+            show_progress=self.show_progress,
+            initial_idx=self.initial_idx,
+            final_idx=self.final_idx)
 
 
 def process_benchmark(algorithm_name: str):
