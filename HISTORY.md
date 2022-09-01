@@ -1,3 +1,7 @@
+# 0.0.5 / 2022-09-01
+* Fix metric reporting
+* Add experiment progress information
+
 # 0.0.4 / 2022-08-31
 * Implement method to send results to ranking repository
 * Implement global metrics method

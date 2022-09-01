@@ -8,9 +8,8 @@ import scipy.stats as st
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-from cfbench.benchmark_template_row_instance import BenchmarkGenerator
+from cfbench.benchmark_template_row_instance import BenchmarkGenerator, TOTAL_FACTUAL
 from cfbench.dataset_data.constants.var_types import VAR_TYPES
-from cfbench.cfg import OHConverter
 from cfbench.cfg.common import nn_ohe
 from cfbench.cfg.analysis import l2, md, madd, sparsity, validity_total, \
     check_one_hot_integrity, check_binary_categorical
@@ -19,18 +18,13 @@ CURRENT_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
 
 RUN_PATH = os.getcwd()
 
-total_factual = 0
-for factual_class_count in ['0', '1']:
-    for dsname in VAR_TYPES.keys():
-        total_factual += pd.read_csv(
-            f'{CURRENT_PATH}/dataset_data/experiments_data/{dsname}_CFDATASET_{factual_class_count}.csv').shape[0]
-
 
 class BenchmarkCF:
 
-    def __init__(self, output_number: int = 1, disable_gpu: bool = False):
+    def __init__(self, output_number: int = 1, disable_gpu: bool = False, show_progress: bool = False):
         self.output_number = output_number
         self.disable_gpu = disable_gpu
+        self.show_progress = show_progress
 
     def create_generator(
             self,
@@ -44,7 +38,8 @@ class BenchmarkCF:
         return BenchmarkGenerator(
             output_number=self.output_number,
             ds_id_test=dataset_idx,
-            disable_gpu=self.disable_gpu)
+            disable_gpu=self.disable_gpu,
+            show_progress=self.show_progress)
 
 
 def process_benchmark(algorithm_name: str):
@@ -52,9 +47,9 @@ def process_benchmark(algorithm_name: str):
     for f in os.listdir('./cfbench_results'):
         if '_'.join(f.split('_')[:-3]) == algorithm_name:
             algorithm_dfs.append(pd.read_pickle(f'./cfbench_results/{f}')[0])
-    if len(algorithm_dfs) != total_factual:
+    if len(algorithm_dfs) != TOTAL_FACTUAL:
         raise ValueError(f'Number of results ({len(algorithm_dfs)}) '
-                         f'is different from the number of factuals ({total_factual})')
+                         f'is different from the number of factuals ({TOTAL_FACTUAL})')
 
     algorithm_df = pd.DataFrame(algorithm_dfs)
 
@@ -92,13 +87,13 @@ def print_global_analysis(algorithm_name: str):
     cf_generation_time_mean, cf_generation_time_error = _calculate_metrics(algorithm_df['cf_generation_time'])
 
     data_report = {
-        'Global coverage': [score_coverage_flip_mean, score_coverage_flip_error],
-        'Global coverage (class flip)': [score_coverage_mean, score_coverage_error],
+        'Global coverage': [score_coverage_mean, score_coverage_error],
+        'Global coverage (class flip)': [score_coverage_flip_mean, score_coverage_flip_error],
         'Global sparsity': [score_sparsity_mean, score_sparsity_error],
         'Global L2 distance': [score_l2_mean, score_l2_error],
         'Global Mean Absolute Deviation': [score_madd_mean, score_madd_error],
         'Global Mahalanobis Distance': [score_md_mean, score_md_error],
-        'CF generation time': [score_coverage_flip_mean, score_coverage_flip_error]
+        'CF generation time': [cf_generation_time_mean, cf_generation_time_error]
     }
 
     print("{:<60} {:<15}".format(algorithm_name, 'Error (95% C.I.)'))

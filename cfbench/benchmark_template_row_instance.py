@@ -1,6 +1,7 @@
-import random as python_random
-import logging
 import os
+import time
+import logging
+import random as python_random
 
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -16,6 +17,12 @@ from cfbench.cfg.common import nn_ohe
 from cfbench.dataset_data.constants.var_types import VAR_TYPES
 
 CURRENT_PATH = '/'.join(os.path.abspath(__file__).split('/')[:-1])
+
+TOTAL_FACTUAL = 0
+for factual_class_count in ['0', '1']:
+    for dsname in VAR_TYPES.keys():
+        TOTAL_FACTUAL += pd.read_csv(
+            f'{CURRENT_PATH}/dataset_data/experiments_data/{dsname}_CFDATASET_{factual_class_count}.csv').shape[0]
 
 logging.basicConfig(level=logging.INFO)
 
@@ -37,9 +44,11 @@ class BenchmarkGenerator:
             self,
             output_number,
             ds_id_test,
-            disable_gpu):
+            disable_gpu,
+            show_progress):
         self.output_number = output_number
         self.ds_id_tes = ds_id_test
+        self.show_progress = show_progress
 
         self.ds_idx = 0
         self.current_dsName = None
@@ -48,6 +57,8 @@ class BenchmarkGenerator:
         self.factual_idx = 0
         self.total_factuals = None
         self.save_results = False
+        self.start_time = None
+        self.times_loop_list = []
 
         if disable_gpu:
             # Disable GPU
@@ -64,6 +75,20 @@ class BenchmarkGenerator:
         return self
 
     def __next__(self):
+
+        if self.show_progress:
+            # If index is one, start the timer
+            if self.factual_idx == 0:
+                self.start_time = time.time()
+            else:
+                self.times_loop_list.append(time.time() - self.start_time)
+
+            if len(self.times_loop_list) % 50 == 0 and len(self.times_loop_list) > 0:
+                logging.info(
+                    f'Experiment {len(self.times_loop_list)}/{TOTAL_FACTUAL} done | '
+                    f'Average time: {round(np.mean(self.times_loop_list), 2)} sec | '
+                    f'ETA '
+                    f'{self._show_time(np.mean(self.times_loop_list)*(TOTAL_FACTUAL-len(self.times_loop_list)))}')
 
         if self.factual_idx + 1 == self.total_factuals and self.total_factuals is not None:
             # Reset factual index
@@ -289,3 +314,28 @@ class BenchmarkGenerator:
                 f'{algorithm_name}_{self.current_dsName}_{self.factual_class}_{self.factual_idx}.pkl')
 
         return cf_found, processed_cf
+
+    # Function that converts minutes to days, hours, minutes, seconds
+    def _convert_time(self, time):
+        days = time // (24 * 60 * 60)
+        time -= days * 24 * 60 * 60
+        hours = time // (60 * 60)
+        time -= hours * 60 * 60
+        minutes = time // 60
+        time -= minutes * 60
+        seconds = time
+        return int(days), int(hours), int(minutes), seconds
+
+    # Function that shows days if days > 0, hours if days > 0 and hours > 0, minutes if days > 0 and hours > 0 and
+    # minutes > 0, seconds otherwise
+    def _show_time(self, time):
+        days, hours, minutes, seconds = self._convert_time(time)
+
+        if days > 0:
+            return '{} days, {} hours, {} minutes, {:0.1f} seconds'.format(days, hours, minutes, seconds)
+        elif hours > 0:
+            return '{} hours, {} minutes, {:0.1f} seconds'.format(hours, minutes, seconds)
+        elif minutes > 0:
+            return '{} minutes, {:0.1f} seconds'.format(minutes, seconds)
+        else:
+            return '{:0.1f} seconds'.format(seconds)
