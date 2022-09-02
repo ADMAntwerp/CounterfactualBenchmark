@@ -2,6 +2,7 @@ from collections import defaultdict
 
 import numpy as np
 import scipy as sp
+import pandas as pd
 
 
 # Calculate the L2 (euclidean) distance
@@ -71,27 +72,15 @@ def sparsity(df_cf, df_cf_found, df_fc_found):
 
 # Returns the coverage (validity) score, that inform if a CF indeed flipped the class result
 def validity_total(df_cf, df_fc, model):
-    # Remove all NaN result rows
-    df_cf_found, df_fc_found = df_cf.dropna(), df_fc[0==df_cf.isna().sum(axis=1)]
+    # (not_is_na) and ((cf > 0.5)!=(fc > 0.5) or cf==0.5)
 
-    # If there are non NaN CF results
-    if df_cf_found.shape[0] > 0:
+    not_is_na = df_cf.isna().sum(axis=1) == 0
 
-        # Predict the label of the CF results and check if it indeed flipped the category
-        out_array = (model.predict(df_cf_found.to_numpy()).round() \
-                     .reshape(1, -1) != df_fc_found['output'].to_numpy())[0].tolist()
+    # Although we fill na with 0, we already know in not_is_na the rows that are not na
+    cf = pd.Series(model.predict(df_cf.fillna(0)).reshape(-1))
+    fc = pd.Series(model.predict(df_fc.drop(columns=['output'])).reshape(-1))
 
-        # Create the output array filled with np.nan results
-        output_results = [np.nan] * df_cf.shape[0]  # Change to False ?
-
-        # For those results that were found, fill with the result
-        for idx_result, idxFound in enumerate(list(df_fc_found.index)):
-            output_results[idxFound] = out_array[idx_result]
-
-        return output_results
-
-    # If no result was found, return only False for all rows
-    return [False] * df_cf.shape[0]
+    return (not_is_na & (((cf > 0.5) != (fc > 0.5)) | (cf.apply(lambda x: round(x, 5)) == 0.5))).to_list()
 
 
 # Calculates the Mean Absolute Deviation Distance
@@ -221,7 +210,8 @@ def check_one_hot_integrity(df_cf, cat_columns):
     for col in cat_columns:
         cat_groups[col.split('_')[0]].append(col)
     df_not_nan = df_cf.isna().sum(axis=1) == 0
-    check_groups = [df_cf.loc[:, group_values].sum(axis=1) == 1 for group_values in cat_groups.values()]
+    check_groups = [df_cf.loc[:, group_values].sum(axis=1) == 1 for group_values in cat_groups.values()
+                    if len(group_values) > 1]
     df_ohe_integrity = sum(check_groups) == len(check_groups)
 
     return (df_not_nan & df_ohe_integrity).to_numpy()

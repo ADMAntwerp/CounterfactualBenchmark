@@ -1,3 +1,7 @@
+# 0.0.7 / 2022-09-02
+* [BUGFIX] Remove binary features from one-hot encoding evaluation
+* [BUGFIX] Fix validity calculation
+
 # 0.0.6 / 2022-09-01
 * Allow to add initial and final indexes
 
