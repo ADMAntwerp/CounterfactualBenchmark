@@ -1,3 +1,6 @@
+# 0.0.7 / 2022-09-03
+# Allow to enable/disable TensorFlow 2 behavior
+
 # 0.0.7 / 2022-09-02
 * [BUGFIX] Remove binary features from one-hot encoding evaluation
 * [BUGFIX] Fix validity calculation

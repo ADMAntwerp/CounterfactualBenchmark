@@ -33,7 +33,6 @@ try:
     tf.random.set_random_seed(42)
 except AttributeError:
     tf.random.set_seed(42)
-tf.compat.v1.disable_v2_behavior()  # disable TF2 behaviour as alibi code still relies on TF1 constructs
 
 
 
@@ -45,6 +44,7 @@ class BenchmarkGenerator:
             output_number,
             ds_id_test,
             disable_gpu,
+            disable_tf2,
             show_progress,
             initial_idx,
             final_idx,):
@@ -75,6 +75,9 @@ class BenchmarkGenerator:
                     assert device.device_type != 'GPU'
             except AttributeError:
                 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+        if disable_tf2:
+            tf.compat.v1.disable_v2_behavior()
 
         if self.initial_idx > 0:
             for _ in range(self.initial_idx):
