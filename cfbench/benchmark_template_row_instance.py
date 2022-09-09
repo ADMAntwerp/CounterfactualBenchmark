@@ -6,8 +6,6 @@ import random as python_random
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-from keras import backend
-
 import pandas as pd
 import numpy as np
 
@@ -47,10 +45,12 @@ class BenchmarkGenerator:
             disable_tf2,
             show_progress,
             initial_idx,
-            final_idx,):
+            final_idx,
+            get_tf_session):
         self.output_number = output_number
         self.ds_id_test = ds_id_test
         self.show_progress = show_progress
+        self.get_tf_session = get_tf_session
 
         self.exp_idx = 0
         self.ds_idx = 0
@@ -186,7 +186,10 @@ class BenchmarkGenerator:
             model_keras = load_model(f'{CURRENT_PATH}/model_data/models/{dsName}.h5', compile=False)
 
             # Get session
-            self.tf_session = backend.get_session()
+            self.tf_session = None
+            if self.get_tf_session:
+                from keras import backend
+                self.tf_session = backend.get_session()
 
             # Get architecture info and pass to our NN architecture
             input_shape = model_keras.get_weights()[0].shape[0]

@@ -1,3 +1,6 @@
+# 0.0.9 / 2022-09-09
+# Allow disable/enable(default) TF session request
+
 # 0.0.7 / 2022-09-03
 # Allow to enable/disable TensorFlow 2 behavior
 

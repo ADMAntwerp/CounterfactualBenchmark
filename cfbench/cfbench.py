@@ -28,13 +28,15 @@ class BenchmarkCF:
             disable_tf2: bool = False,
             show_progress: bool = False,
             initial_idx: int = 0,
-            final_idx: int = TOTAL_FACTUAL,):
+            final_idx: int = TOTAL_FACTUAL,
+            get_tf_session: bool = True):
         self.output_number = output_number
         self.disable_gpu = disable_gpu
         self.disable_tf2 = disable_tf2
         self.show_progress = show_progress
         self.initial_idx = initial_idx
         self.final_idx = final_idx
+        self.get_tf_session = get_tf_session
 
     def create_generator(
             self,
@@ -52,7 +54,8 @@ class BenchmarkCF:
             disable_tf2=self.disable_tf2,
             show_progress=self.show_progress,
             initial_idx=self.initial_idx,
-            final_idx=self.final_idx)
+            final_idx=self.final_idx,
+            get_tf_session=self.get_tf_session)
 
 
 def process_benchmark(algorithm_name: str):
